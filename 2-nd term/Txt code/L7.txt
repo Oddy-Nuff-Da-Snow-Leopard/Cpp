@@ -1,0 +1,400 @@
+/*
+Создать проект, демонстрирующий работу со стеком, организованным на основе списка, в соответствии со своим вариантом для данных из таблицы ниже.
+Все операции со стеком реализовать через функции.
+Разработать функцию, которая по одному стеку строит два новых: Stack1 из положительных элементов и Stack2 из отрицательных.
+*/
+struct stack
+{
+	float number;
+	stack *next;
+};
+
+//Функции для меню
+void menu(void);
+void submenu(void);
+
+//Основные функции для работы со стеком
+void push(stack**, float);
+float pop(stack**);
+float peek(stack*);
+bool empty(stack*);
+unsigned short size(stack*);
+
+//Дополнительные функции(неродные по отношению к функционалу стека)
+
+//Функции для проверки
+bool flagCheck(short);
+bool verification(stack*, short);
+
+====================
+
+#include <iostream>
+#include "header.h"
+using namespace std;
+
+char menuDelimiter[] = "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+
+void menu(void)
+{
+	cout << menuDelimiter;
+	cout << "\tМеню основных функций." << endl;
+	cout << " Введите: " << endl;
+	cout << "\t1 - для добавления элемента в стек;" << endl;
+	cout << "\t2 - для извлечения элемента из стека;" << endl;
+	cout << "\t3 - для получения головного элемента стека;" << endl;
+	cout << "\t4 - для проверки стека на пустоту;" << endl;
+	cout << "\t5 - для того, чтобы узнать размер стека;" << endl;
+	cout << "\t6 - для вызова меню дополнительныч функций." << endl;
+	cout << "\t0 - для выхода." << endl;
+}
+
+
+void push(stack **head, float x)
+{
+	stack* fresh = new stack;
+	fresh->number = x;
+	fresh->next = *head;
+	*head = fresh;
+}
+
+
+float pop(stack **head)
+{
+	stack *ptr = *head;
+	float number = ptr->number;
+	*head = ptr->next;
+	delete ptr;
+	return number;
+}
+
+
+float peek(stack *head)
+{
+	return head->number;
+}
+
+
+bool empty(stack *head)
+{
+	if (head == nullptr)
+		return true;
+	else
+		return false;
+}
+
+
+unsigned short size(stack *head)
+{
+	unsigned short n = 0;
+	stack *ptr = head;
+	while (ptr)
+	{
+		n++;
+		ptr = ptr->next;
+	}
+	return n;
+}
+
+
+void submenu(void)
+{
+	cout << menuDelimiter;
+	cout << "\tМеню дополнительных функций." << endl;
+	cout << " Введите: " << endl;
+	cout << "\t1 - для вывода элемента(ов) стека;" << endl;
+	cout << "\t2 - для удаления элемента(ов) стека;" << endl;
+	cout << "\t3 - для разделения полож. и отриц. элементов стека;" << endl;
+	cout << "\t4 - для выхода в меню основных функций;" << endl;
+	cout << "\t0 - для выхода." << endl;
+}
+
+
+bool flagCheck(short selection)
+{
+	if (selection == 1 || selection == 2 || selection == 3)
+		return false;
+	else
+	{
+		cout << " Упс, ошибка ввода, попробуйте снова." << endl;
+		return true;
+	}
+}
+
+
+bool verification(stack *myStack, short n)
+{
+	if (n > size(myStack))
+	{
+		cout << " Ошибка! Всего элементов в стеке - " << size(myStack) << '.' << endl;
+		return false;
+	}
+	else if (n <= 0)
+	{
+		cout << " Ошибка, элемента с данным номером в стеке нет!" << endl;
+		return false;
+	}
+	else
+		return true;
+}
+
+====================
+
+#include <iostream>
+#include "header.h"
+using namespace std;
+
+stack *head = nullptr;
+
+float number;
+short choice;
+short i;
+
+int main(void)
+{
+	setlocale(0, "");
+	char delimiter[] = "-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-\n";
+
+	menu();
+	cout << " Ввод > "; cin >> choice;
+	while (true)
+	{
+		while (choice < 0 || choice > 6)
+		{
+			cout << " Упс, ошибка ввода, попробуйте снова." << endl;
+			cout << delimiter;
+			cout << " Ввод > "; cin >> choice;
+		}
+		switch (choice)
+		{
+		case 0: return 0;
+
+		case 1:
+			cout << delimiter;
+			cout << "\tДобавление элемента в стек." << endl;
+			cout << " Введите число: "; cin >> number;
+			push(&head, number);
+			cout << " Элемент добавлен!" << endl;
+			break;
+
+		case 2:
+			if (empty(head))
+				cout << " Извлечение элемента невозможно, стек пуст!" << endl;
+			else
+			{
+				cout << delimiter;
+				cout << "\tИзвлечение элемента из стека." << endl;
+				cout << " Извлеченный элемент: " << pop(&head) << endl;
+			}
+			break;
+
+		case 3:
+			if (empty(head))
+				cout << " Получение головного элемента невозможно, т.к. стек пуст!" << endl;
+			else
+			{
+				cout << delimiter;
+				cout << "\tПолучение головного элемента стека." << endl;
+				cout << " Головной элемент: " << peek(head) << endl;
+			}
+			break;
+
+		case 4:
+			cout << delimiter;
+			cout << "\tПроверка стека на пустоту." << endl;
+			if (empty(head))
+				cout << " Стек пуст!" << endl;
+			else
+				cout << " Стек НЕ пуст!" << endl;
+			break;
+
+		case 5:
+			cout << " Количество элементов в стеке: " << size(head) << endl;
+			break;
+
+		case 6:
+			short selection;
+			submenu();
+			cout << " Ввод > "; cin >> choice;
+			while (true)
+			{
+
+				while (choice < 0 || choice > 6)
+				{
+					cout << " Упс, ошибка ввода, попробуйте снова." << endl;
+					cout << delimiter;
+					cout << " Ввод > "; cin >> choice;
+				}
+
+				switch (choice)
+				{
+				case 0: return 0;
+
+				case 1:
+					if (empty(head))
+						cout << " Вывод невозможен, стек пуст!" << endl;
+					else
+					{
+						cout << delimiter;
+						cout << "\tВывод элемента(ов) стека." << endl;
+						bool flag = true;
+						while (flag)
+						{
+							cout << "   1 - для вывода одного элемента;" << endl;
+							cout << "   2 - для вывода всего стека;" << endl;
+							cout << "   3 - выход." << endl;
+							cout << " Ввод > "; cin >> selection;
+							switch (selection)
+							{
+							case 1:
+								short n;
+								cout << " Введите номер элемента: "; cin >> n;
+								if (verification(head, n))
+								{
+									stack *ptr = head;
+									for (i = 1; i < n; i++)
+										ptr = ptr->next;
+									cout << " Число элемента №" << n << ": ";
+									cout << ptr->number << endl;
+								}
+								break;
+
+							case 2:
+								stack * ptr = head;
+								cout << " Весь стек: " << endl;
+								while (ptr)
+								{
+									cout << " --> " << ptr->number;
+									ptr = ptr->next;
+								}
+
+								cout << " --> nullptr" << endl;
+								break;
+							}
+							flag = flagCheck(selection);
+						}
+					}
+					break;
+
+				case 2:
+					if (empty(head))
+						cout << " Удаление недопустимо, т.к. стек пуст!" << endl;
+					else
+					{
+						cout << delimiter;
+						cout << "\tУдаление элемента(ов) стека." << endl;
+						bool flag = true;
+						while (flag)
+						{
+							cout << "   1 - для удаления одного элемента;" << endl;
+							cout << "   2 - для удаления всего стека;" << endl;
+							cout << "   3 - выход." << endl;
+							cout << " Ввод > "; cin >> selection;
+							switch (selection)
+							{
+							case 1:
+								short n;
+								cout << " Введите номер удаляемого элемента: "; cin >> n;
+								if (verification(head, n))
+								{
+									stack *ptr = head;
+									stack *prevSibling;
+									for (i = 1; i < n; i++)
+									{
+										prevSibling = ptr;
+										ptr = ptr->next;
+									}
+									stack *nextSibling = ptr->next;
+									delete ptr;
+									prevSibling->next = nextSibling;
+									cout << " Элемент под номером " << n << " удалён!" << endl;
+								}
+								break;
+
+							case 2:
+								stack *ptr;
+								while (head)
+								{
+									ptr = head->next;
+									delete head;
+									head = ptr;
+								}
+								cout << " Все элементы стека удалены!" << endl;
+								break;
+							}
+							flag = flagCheck(selection);
+						}
+					}
+					break;
+
+				case 3:
+				{
+					if (empty(head))
+						cout << " Разделение невозможно, стек пуст!" << endl;
+					else
+					{
+						cout << delimiter;
+						cout << "\tРазделение полож. и отриц. элементов стека." << endl << endl;
+
+						stack *head1 = nullptr;
+						stack *head2 = nullptr;
+
+						stack *ptr = head;
+
+						while (ptr)
+						{
+							if (ptr->number > 0)
+								push(&head1, ptr->number);
+
+							if (ptr->number < 0)
+								push(&head2, ptr->number);
+							
+							ptr = ptr->next;
+						}
+
+						if (empty(head1))
+							cout << " В исходном стеке нет положительных элементов!" << endl << endl;
+						else
+						{
+							cout << " Стек из положительных элементов: " << endl;
+							while (head1)
+							{
+								cout << " --> " << head1->number;
+								head1 = head1->next;
+							}
+							cout << " --> nullptr" << endl << endl;
+						}
+
+						if (empty(head2))
+							cout << " В исходном стеке нет отрицательных элементов!" << endl;
+						else
+						{
+							cout << " Стек из отрицательных элементов: " << endl;
+							while (head2)
+							{
+								cout << " --> " << head2->number;
+								head2 = head2->next;
+							}
+							cout << " --> nullptr" << endl << endl;
+						}
+					}
+				}
+					break;
+
+				case 4:
+					main();
+					break;
+				}
+				if (choice)
+				{
+					cout << delimiter;
+					cout << endl << "\tЧто дальше? Ввод > "; cin >> choice;
+					cout << endl;
+				}
+			}
+			break;
+		}
+		cout << delimiter;
+		cout << endl << "\tЧто дальше? Ввод > "; cin >> choice;
+		cout << endl;
+	}
+}

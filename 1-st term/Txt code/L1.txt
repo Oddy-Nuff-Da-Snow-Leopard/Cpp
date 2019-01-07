@@ -1,0 +1,338 @@
+===============
+1,5 и 8 - бред
+===============
+//2. Есть действительные числа x1, y1, x2. Вычислить max(x1, y1, x2).
+#include <iostream>
+#include <ctime>
+#include <iomanip>
+using namespace std;
+void main()
+{
+	setlocale(LC_CTYPE, "Russian");
+	srand((unsigned)time(NULL));
+	f1:
+	int a[3], max;
+	for (int i = 0; i < 3; i++)
+	{
+		*(a + i) = rand() % 100;
+	}
+	cout << "X1 = " << a[0] << "   " << "Y1 = " << a[1] << "   " << "X2 = " << a[2] << endl;
+	if (a[0] > a[1] && a[0]>a[2] )
+		max = a[0];
+	else if (a[0]<a[1] && a[1]>a[2])
+		max = a[1];
+	else
+	{
+		max = a[2];
+	}
+	cout << "Максимальное число : " << max << endl << endl;
+	f2 :
+	cout << "Введите :\n 1 - для повтора программы \n 2 - для выхода" << endl;
+	int b;
+	cout << "\t"; cin >> b; cout << endl;
+	switch (b)
+	{
+	case(1):
+			goto f1;
+			break;
+	case(2):
+		break;
+	default:cout << "Попробуйте снова : " << endl;
+		goto f2;
+		break;
+	}
+}
+===============
+//3. Даны действительные числа x, y, z. Вычислить max(x + y + z, xyz) * 3.
+#include <iostream>
+#include <ctime>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(LC_CTYPE, "Russian");
+	srand((unsigned)time(NULL));
+	int a[3], max;
+	int sum = 0, composition = 1;
+	for (int i = 0; i < 3; i++)
+	{
+		*(a + i) = rand() % 10;
+	}
+	cout << "x = " << a[0] << "   " << "y = " << a[1] << "   " << "z = " << a[2] << endl;
+	for (int i = 0; i < 3; i++)
+	{
+		sum += a[i];
+		composition *= a[i];
+	}
+	cout << "Сумма чисел : " << sum << endl << "Произведение чисел : " << composition << endl;
+	if (sum > composition)
+	{
+		cout << "Сумма чисел превосходит их произведение" << endl;
+		max = sum;
+	}
+	else
+	{
+		cout << "Произведение чисел превосходит их сумму" << endl;
+		max = composition;
+	}
+		cout << "max * 3 = " << max * 3 << endl;
+		_getch();
+}
+==============
+//4. Определить, есть ли среди заданных целых чисел A, B, C два чётных числа.
+#include <iostream>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(LC_CTYPE, "Russian");
+	int A, B, C;
+	cout << "Введите числа : " << endl;
+	cout << "A = "; cin >> A;
+	cout << "B = "; cin >> B;
+	cout << "C = "; cin >> C;
+	if ((A%2==0 && B%2==0)||(A%2==0 && C%2==0)||(B%2==0 && C%2==0))
+		cout << "В заданных числах есть два чётных числа" << endl;
+	else
+		cout << "В заданных числах отсутствуют два чётных числа" << endl;
+	_getch();
+}
+===============
+//6. Среди заданных целых чисел k, f, t найти пары кратных.
+#include <iostream>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(LC_CTYPE, "Russian");
+	int k, f, t;
+	cout << "Введите числа : " << endl;
+	cout << "k = "; cin >> k;
+	cout << "f = "; cin >> f;
+	cout << "t = "; cin >> t;
+	
+	int k_plus_f = k + f, k_plus_t = k + t, f_plus_t = f + t;
+
+	int q = 2;
+
+	for (q = 2; q <= k_plus_f; q++)
+		if (k%q != 0 || f%q != 0)
+			continue;
+		else
+			break;
+	if (k%q == 0 && f%q == 0)
+		cout << "Числа " << k << "(k) и " << f << "(f) кратны числу " << q << endl;
+	else
+		cout << "Числа " << k << "(k) и " << f << "(f) не кратны" << endl;
+
+	q = 2;
+
+	for (q = 2; q <= f_plus_t; q++)
+		if (f%q != 0 || t%q != 0)
+			continue;
+		else
+			break;
+	if (f%q == 0 && t%q == 0)
+		cout << "Числа " << f << "(f) и " << t << "(t) кратны числу " << q << endl;
+	else
+		cout << "Числа " << f << "(f) и " << t << "(t) не кратны" << endl;
+
+	q = 2;
+
+	for (q = 2; q <= k_plus_t; q++)
+		if (k%q != 0 || t%q != 0)
+			continue;
+		else
+			break;
+	if (k%q == 0 && t%q == 0)
+		cout << "Числа " << k << "(k) и " << t << "(t) кратны числу " << q << endl;
+	else
+		cout << "Числа " << k << "(k) и " << t << "(t) не кратны" << endl;
+
+	_getch();
+}
+===============
+//7. Даны числа a, b, c. Если a < b < c, то каждое число заменить наибольшим,
+если a>b>c, то числа оставить без изменений, в противном случае все числа заменить их квадратами.
+#include <iostream>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(LC_CTYPE, "Russian");
+	int a, b, c;
+	cout << "Введите числа : " << endl;
+	cout << "a = "; cin >> a;
+	cout << "b = "; cin >> b;
+	cout << "c = "; cin >> c;
+	cout << endl;
+	if (a < b && b < c)
+	{
+		a = c; b = c;
+		cout << "a = " << a << endl << "b = " << b << endl << "c = " << c << endl;
+	}
+	else if (a > b && b > c)
+		cout << "a = " << a << endl << "b = " << b << endl << "c = " << c << endl;
+	else
+	{
+		a *= a; b *= b; c *= c;
+		cout << "a = " << a << endl << "b = " << b << endl << "c = " << c << endl;
+	}
+	
+	_getch();
+}
+===============
+//9. Даны действительные числа x, y, x2. Вычислить max(x, y, x2 ) * min(x, y, x2).
+#include <iostream>
+#include <conio.h>
+#include <ctime>
+using namespace std;
+void main()
+{
+	setlocale(LC_CTYPE, "Russian");
+	srand((unsigned)time(NULL));
+	int a[3];
+	for (int i = 0; i < 3; i++)
+		a[i] = rand() % 100;
+	cout << "x = " << a[0] << "   " << "y = " << a[1] << "   " << "x2 = " << a[2] << endl;
+	int max = a[0];
+	for (int i = 0; i < 3; i++)
+		if (a[i] > max)
+			max = a[i];
+	int min = a[0];
+	for (int i = 0; i < 3; i++)
+		if (a[i] < min)
+			min = a[i];
+	cout << endl;
+	cout << "max(x, y, x2) = " << max << endl;
+	cout << "min(x, y, x2) = " << min << endl;
+	cout << "max(x, y, x2) * min(x, y, x2) = " << max * min << endl;
+	_getch();
+}
+===============
+//10. Известно, что x, y, z - вещественные числа. Существует ли треугольник с длинами сторон x, y, z? Если существует, то ответить, является ли он остроугольным.
+#include <iostream>
+#include <conio.h>
+#include <ctime>
+using namespace std;
+void main()
+{
+	setlocale(LC_CTYPE, "Russian");
+	srand((unsigned)time(NULL));
+	double a[3];
+	int i, r;
+	for (i = 0; i < 3; i++)
+		a[i] = abs(rand() / (float)32767 * 20 - 10);
+	cout << "Ваши вещественные числа : " << endl;
+	cout << "x = " << a[0] << "   " << "y = " << a[1] << "   " << "z = " << a[2] << endl;
+	if (a[0] < a[1] + a[2] && a[1] < a[0] + a[2] && a[2] < a[0] + a[1])
+	{
+		cout << "Треугольник со сторонами x, y ,z существует" << endl;
+		double b[2];
+		double max = a[0];
+		for (i = 0; i < 3; i++)
+		{
+			if (a[i] >= max)
+				max = a[i];
+		}
+		for (i = 0,r=0; i < 3; i++)
+		{
+			if (a[i] != max)
+			{
+				b[r] = a[i];
+				r++;
+			}
+			else
+				continue;
+		}
+		cout << endl << "\tПроверочка :\n {" << endl;
+		cout << "Максимальное : " << max << endl;
+		cout << "Без максимального : ";
+		for (i = 0; i < 2; i++)
+			cout << b[i] << "   ";
+		cout << endl;
+		cout << pow(max, 2) << " ?! " << pow(b[0], 2) + pow(b[1], 2) << endl;
+		cout << " }" << endl << endl;
+		if (pow(max, 2) < (pow(b[0], 2) + pow(b[1], 2)))
+			cout << "Треугольник является остроугольным" << endl;
+		else if (pow(max, 2) > (pow(b[0], 2) + pow(b[1], 2)))
+			cout << "Треугольник является тупоугольным" << endl;
+	}
+	else
+		cout << "Треугольник со сторонами x, y ,z не существует" << endl;
+	
+	_getch();
+}
+==============
+//11. Даны действительные числа x, y, z. Вычислить max(x, y, z) * min(xy, yz, xz).
+#include <iostream>
+#include <conio.h>
+#include <ctime>
+using namespace std;
+void main()
+{
+	setlocale(LC_CTYPE, "Russian");
+	srand((unsigned)time(NULL));
+	int a[3];
+	int i = 0;
+	for (i = 0; i < 3; i++)
+		a[i] = rand() % 9 + 1;
+	cout << "x = " << a[0] << "   " << "y = " << a[1] << "   " << "z = " << a[2] << endl;
+	int max = a[0];
+	for (i = 1; i < 3; i++)
+	{
+		if (a[i] > max)
+			max = a[i];
+	}
+	int b[3];
+	b[0] = a[0] * a[1], b[1] = a[1] * a[2], b[2] = a[0] * a[2];
+	int min = b[0];
+	for (i = 1; i < 3; i++)
+	{
+		if (b[i] < min)
+			min = b[i];
+	}
+	cout << "max(x, y, z) = " << max << endl;
+	cout << "x*y = " << b[0] << "   " << "y*z = " << b[1] << "   " << "x*z = " << b[2] << endl;
+	cout << "min(xy, yz, xz) = " << min << endl;
+	cout << "max(x, y, z) * min(xy, yz, xz) = " << max * min << endl;
+	_getch();
+}
+===============
+//12. Есть действительные числа x, y, z. Вычислить min(x+y+z / 2, xyz)+max(xy, y).
+#include <iostream>
+#include <conio.h>
+#include <ctime>
+using namespace std;
+void main()
+{
+	setlocale(LC_CTYPE, "Russian");
+	srand((unsigned)time(NULL));
+	double a[3];
+	int i = 0;
+	for (i = 0; i < 3; i++)
+		a[i] = rand() % 9 + 1;
+	cout << "x = " << a[0] << "   " << "y = " << a[1] << "   " << "z = " << a[2] << endl;
+	double x_plus_y_plus_z = 0, product_of_number_xyz = 1;
+	for (i = 0; i < 3; i++)
+	{
+		x_plus_y_plus_z += a[i];
+		product_of_number_xyz *= a[i];
+	}
+	x_plus_y_plus_z /= 2;
+	double min;
+	if (x_plus_y_plus_z < product_of_number_xyz)
+		min = x_plus_y_plus_z;
+	else
+		min = product_of_number_xyz;
+	cout << "min(x + y + z / 2, xyz)  : " << min << endl;
+	double product_of_numbers_xy = a[0] * a[1];
+	double max;
+	if (product_of_numbers_xy > a[1])
+		max = product_of_numbers_xy;
+	else
+		max = a[1];
+	cout << "max(xy, y) : " << max << endl;
+	cout << "min(x + y + z / 2, xyz) + max(xy, y) : " << min + max << endl;
+	_getch();
+}

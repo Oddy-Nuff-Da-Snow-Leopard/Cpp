@@ -1,0 +1,231 @@
+7. Удалить из массива все элементы, совпадающие с его минимальным значением.
+Добавить в нача-ло массива три элемента со значением, равным среднему арифметическому массива. 
+#include <iostream>
+#include <conio.h>
+#include <ctime>
+using namespace std;
+void main()
+{
+	system("color 5f");
+	setlocale(LC_CTYPE, "Russian");
+	int i, n;
+	int z = 99, size, k = 0;
+	const int N = 100;
+	float  A[N], B[N], min, sum = 0;
+	float average;
+	cout << "Введите количество элементов в массиве : ";
+	cin >> size;
+	cout << "Массив А:" << endl;
+	srand((unsigned)time(NULL));
+	for (i = 0; i < size; i++)
+	{
+		A[i] = rand() % z;
+		cout << A[i] << ' ';
+	}
+	cout << endl;
+	min = A[0];
+	for (i = 0; i <size; i++)
+	{
+		if (min >= A[i])
+			min = A[i];
+	}
+	cout << "Минимальное значение в массиве : " << min << endl << endl;
+	for (i = 0; i < size; i++)
+	{
+		if (A[i] == min)
+		{
+			n = i;
+			for (n; n < size; n++)
+			{
+				A[n] = A[n + 1];
+			}
+			size--;
+			k++;
+		}
+	}
+	cout << "Новый массив с удаленными одинаковыми минимальными значениями : " << endl;
+	for (i = 0; i < size; i++)
+	{
+		cout << A[i] << ' ';
+		sum += A[i];
+	}
+	cout << endl << endl;
+	cout << "Сумма элементов нового массива : " << sum << endl;
+	average = (float)sum / (float)(size);
+	cout << "Среднее арифметическое элементов в новом массиве : " << average << endl << endl;
+	for (i = 0; i < size; i++)
+		B[i] = A[i];
+	for (i = 0; i < 3; i++)
+		A[i] = average;
+	cout << endl;
+
+	cout << "Новейший массив : " << endl;
+	for (i = 0; i < 3; i++)
+		cout << A[i] << ' ';
+	for (i = 0; i < size; i++)
+		cout << B[i] << ' ';
+	_getch();
+}
+===============
+9. Найти в массиве элемент, наиболее близкий к среднему арифметическому суммы его элементов.
+#include <iostream>
+#include <conio.h>
+#include <ctime>
+using namespace std;
+void main()
+{
+	system("color 5e");
+	setlocale(LC_CTYPE, "Russian");
+	const int N = 100;
+	int i = 0, size, z = 99;
+	float average, A[N], n, sum = 0, blizkoe;
+	cout << "Введите количество элементов в массиве : ";
+	cin >> size;
+	srand((unsigned)time(NULL));
+	for (i = 0; i < size; i++)
+	{
+		A[i] = rand() % z;
+	}
+	cout << "Массив A : " << endl;
+	for (i = 0; i < size; i++)
+	{
+		cout << A[i] << ' ';
+		sum += A[i];
+	}
+	cout << endl;
+	cout << "Сумма элементво в массиве : " << sum << endl;
+	average = (float)sum / (float)size;
+	cout << "Среднее арифметическое элементов в массиве : " << average << endl;
+	blizkoe = A[0];
+	n = abs(average - A[0]);
+	for (i = 1; i < size; i++)
+	{
+		if (n > abs(A[i] - average))
+		{
+			blizkoe = A[i];
+			n = abs(A[i] - average);
+		}
+	}
+	cout << "Элемент в массиве, наиболее близкий к среднему арифметическому суммы его элементов : ";
+	cout << blizkoe << endl;
+	_getch();
+}
+===============
+ДОПОЛЬНИТЕЛЬНЫЕ 
+
+2. Переставить в обратном порядке элементы массива, 
+расположенные между его минимальным и максималь-ным элементами.
+#include <iostream>
+#include <conio.h>
+#include <ctime>
+using namespace std;
+void main()
+{
+	system("color 5f");
+	setlocale(LC_CTYPE, "Russian");
+	int i, rmx = 99, size, k2 = 0, k1 = 0;
+	const int N = 100;
+	float  A[N], B[N], min, max;
+	cout << "Введите количество элементов в массиве : ";
+	cin >> size;
+	cout << "Массив А:" << endl;
+	srand((unsigned)time(NULL));
+	for (i = 0; i < size; i++)
+	{
+		A[i] = rand() % rmx;
+		cout << A[i] << ' ';
+	}
+	cout << endl;
+	cout << "Минимальное значение в массиве : ";
+	min = A[0];
+	for (i = 0; i < size; i++)
+	{
+		if (min >= A[i])
+			min = A[i];
+	}
+	cout << min << endl;
+	cout << "Максимальное значение в массиве : ";
+	max = A[0];
+	for (i = 0; i < size; i++)
+	{
+		if (max <= A[i])
+			max = A[i];
+	}
+	cout << max << endl;
+	cout << "Номер минимального элемента в массиве : ";
+	for (i = 0; i < size; i++)
+	{
+		if (A[i] != min)
+			k1++;
+		else
+			break;
+	}
+	cout << k1 << endl;
+	cout << "Номер максимального значения в массиве : ";
+	for (i = 0; i < size; i++)
+	{
+		if (A[i] != max)
+			k2++;
+		else
+			break;
+	}
+	cout << k2 << endl << endl;
+	cout << "Переставленные в обратном порядке элементы массива, расположенные между его минимальным и максималь-ным элементами : " << endl;
+	for (i = 0; i < size; i++)
+	{
+		B[i] = A[i];
+	}
+	if (k2 < k1)
+	{
+		k2 += 1;
+		for (i = k2; i < k1; i++)
+		{
+			A[k1 - 1] = A[i];
+			A[i] = B[k1 - 1];
+			k1--;
+		}
+	}
+	else
+		k1 += 1;
+	for (i = k1; i < k2; i++)
+	{
+		A[k2 - 1] = A[i];
+		A[i] = B[k2 - 1];
+		k2--;
+	}
+	for (i = 0; i < size; i++)
+	{
+		cout << A[i] << ' ';
+	}
+	_getch();
+}
+===============
+3. Подсчитать количество пар соседних элементов массива с одинаковыми значениями.
+#include <iostream>
+#include <conio.h>
+#include <ctime>
+using namespace std;
+void main()
+{
+	system("color 5f");
+	setlocale(LC_CTYPE, "Russian");
+	int i, size, z = 20, k=0;
+	const int N = 100;
+	int A[N];
+	cout << "Введите количество элементов в массиве : ";
+	cin >> size;
+	cout << "Массив А : " << endl;
+	for (i = 0; i < size; i++)
+	{
+		A[i] = rand() % z;
+		cout << A[i] << ' ';
+	}
+	cout << endl;
+	cout << "Количество пар соседних элементов массива с одинаковыми значениями : ";
+	for (i = 0; i < size; i++)
+		if (A[i] == A[i + 1])
+			k++;
+	cout << endl;
+	cout << k;
+	_getch();
+}

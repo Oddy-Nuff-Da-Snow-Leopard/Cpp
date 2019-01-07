@@ -1,0 +1,411 @@
+/*Создать проект из нескольких файлов, демонстрирующий работу с очередью.
+Разработать меню и реализовать все операции с очередью через функции. 
+Создать очередь для символов.
+Ввести эталонный символ.
+Вводить символы с экрана в очередь до встречи эталонного.
+После встречи с эталонным, вывести всю очередь, удалить два элемента и посчитать оставшееся количество элементов очереди.
+*/
+
+struct queue
+{
+	char symbol;
+	queue *next;
+};
+
+//Функции для меню
+void menu(void);
+void submenu(void);
+
+//Основные функции для работы со стеком
+void push(queue *&, char);
+char pop(queue**);
+char front(queue*);
+char back(queue*);
+bool empty(queue*);
+unsigned short size(queue*);
+
+//Дополнительные функции(неродные по отношению к функционалу стека)
+void output(queue*, short);
+void removing(queue*&, short);
+void task(queue*);
+
+//Функции для проверки
+bool flagCheck(short);
+bool verification(queue*, short);
+
+====================
+
+#include <iostream>
+#include "header.h"
+using namespace std;
+
+char menuDelimiter[] = "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n";
+unsigned short i;
+
+void menu(void)
+{
+	cout << menuDelimiter;
+	cout << "\tМеню основных функций." << endl;
+	cout << " Введите: " << endl;
+	cout << "\t1 - для добавления элемента в очередь;" << endl;
+	cout << "\t2 - для извлечения элемента из очереди;" << endl;
+	cout << "\t3 - для получения первого элемента очереди;" << endl;
+	cout << "\t4 - для получения последнего элемента очереди;" << endl;
+	cout << "\t5 - для проверки стека на пустоту;" << endl;
+	cout << "\t6 - для того, чтобы узнать размер стека;" << endl;
+	cout << "\t7 - для вызова меню дополнительныч функций." << endl;
+	cout << "\t0 - для выхода." << endl;
+}
+
+void push(queue *&head, char symbol)
+{
+	if (head)
+	{
+		queue *fresh = new queue;
+		fresh->symbol = symbol;
+		fresh->next = nullptr;
+
+		queue *ptr = head;
+		while (ptr->next)
+			ptr = ptr->next;
+		ptr->next = fresh;
+	}
+	else
+	{
+		head = new queue;
+		head->symbol = symbol;
+		head->next = nullptr;
+	}
+}
+
+
+char pop(queue **head)
+{
+	queue *ptr = *head;
+	char symbol = ptr->symbol;
+	*head = ptr->next;
+	delete ptr;
+	return symbol;
+}
+
+
+char front(queue *head)
+{
+	return head->symbol;
+}
+
+char back(queue *head)
+{
+	queue *ptr = head;
+	while (ptr->next)
+		ptr = ptr->next;
+	return ptr->symbol;
+}
+
+
+bool empty(queue *head)
+{
+	if (head == nullptr)
+		return true;
+	else
+		return false;
+}
+
+
+unsigned short size(queue *head)
+{
+	unsigned short n = 0;
+	queue *ptr = head;
+	while (ptr)
+	{
+		n++;
+		ptr = ptr->next;
+	}
+	return n;
+}
+
+
+void submenu(void)
+{
+	cout << menuDelimiter;
+	cout << "\tМеню дополнительных функций." << endl;
+	cout << " Введите: " << endl;
+	cout << "\t1 - для вывода элемента(ов) очереди;" << endl;
+	cout << "\t2 - для удаления элемента(ов) очереди;" << endl;
+	cout << "\t3 - для выхода в меню основных функций;" << endl;
+	cout << "\t0 - для выхода." << endl;
+}
+
+
+void output(queue *head, short selection)
+{
+	short n;
+	queue *ptr = head;
+
+	if (selection == 1)
+	{
+			cout << " Введите номер элемента: "; cin >> n;
+			if (verification(head, n))
+			{
+				for (i = 1; i < n; i++)
+					ptr = ptr->next;
+				cout << " Символ элемента №" << n << ": " << ptr->symbol << endl;
+			}
+	}
+
+	else if (selection == 2)
+	{
+		cout << " Вся очередь: " << endl;
+		while (ptr)
+		{
+			cout << " --> " << ptr->symbol;
+			ptr = ptr->next;
+		}
+		cout << " --> nullptr" << endl;
+	}
+}
+
+
+void removing(queue *&head, short selection)
+{
+	short n;
+	queue *ptr = head;
+
+	if (selection == 1)
+	{
+		cout << " Введите номер удаляемого элемента: "; cin >> n;
+		if (verification(head, n))
+		{
+			queue *prevSibling = nullptr;
+
+			for (i = 1; i < n; i++)
+			{
+				prevSibling = ptr;
+				ptr = ptr->next;
+			}
+			queue *nextSibling = ptr->next;
+			delete ptr;
+			prevSibling->next = nextSibling;
+			cout << " Элемент под номером " << n << " удалён!" << endl;
+		}
+	}
+
+	else if (selection == 2)
+	{
+		while (head)
+		{
+			ptr = head->next;
+			delete head;
+			head = ptr;
+		}
+		cout << " Все элементы очереди удалены!" << endl;
+	}
+}
+
+
+bool flagCheck(short selection)
+{
+	if (selection == 1 || selection == 2 || selection == 3)
+		return false;
+	else
+	{
+		cout << " Упс, ошибка ввода, попробуйте снова." << endl;
+		return true;
+	}
+}
+
+
+bool verification(queue *head, short n)
+{
+	if (n > size(head))
+	{
+		cout << " Ошибка! Всего элементов в стеке - " << size(head) << '.' << endl;
+		return false;
+	}
+	else if (n <= 0)
+	{
+		cout << " Ошибка, элемента с данным номером в стеке нет!" << endl;
+		return false;
+	}
+	else
+		return true;
+}
+
+====================
+
+#include <iostream>
+#include "header.h"
+using namespace std;
+
+queue *head = nullptr;
+
+char referenceCharacter = 'q';
+
+char symbol;
+short choice;
+short i;
+
+int main(void)
+{
+	system("mode con cols=65 lines=20");
+	setlocale(0, "");
+	char delimiter[] = "-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-\n";
+	cout << " ЭТАЛОННЫЙ СИМВОЛ - " << referenceCharacter << endl;
+	menu();
+	cout << " Ввод > "; cin >> choice;
+	while (true)
+	{
+		while (choice < 0 || choice > 7)
+		{
+			cout << " Упс, ошибка ввода, попробуйте снова." << endl;
+			cout << delimiter;
+			cout << " Ввод > "; cin >> choice;
+		}
+		switch (choice)
+		{
+		case 0: return 0;
+
+		case 1:
+			cout << delimiter;
+			cout << "\tДобавление элемента в очередь." << endl;
+			cout << " Введите символ: "; cin >> symbol;
+			push(head, symbol);
+			cout << " Элемент добавлен!" << endl;
+
+			if (symbol == referenceCharacter)
+			{
+				cout << endl << " Встречен эталонный символ." << endl << endl;
+				output(head, 2);
+				cout << endl << " Извлечены 2-а элемента: ";
+				cout << pop(&head);
+				cout << ", " << pop(&head);
+				cout << endl << " Количество оставшихся в очереди элементов: " << size(head) << endl;
+			}
+			break;
+
+		case 2:
+			if (empty(head))
+				cout << " Извлечение элемента невозможно, очередь пуста!" << endl;
+			else
+			{
+				cout << delimiter;
+				cout << "\tИзвлечение элемента из очереди." << endl;
+				cout << " Извлеченный элемент: " << pop(&head) << endl;
+			}
+			break;
+
+		case 3:
+			if (empty(head))
+				cout << " Получение первого элемента невозможно, т.к. очередь пуста!" << endl;
+			else
+			{
+				cout << delimiter;
+				cout << "\tПолучение первого элемента очереди." << endl;
+				cout << " Первый элемент: " << front(head) << endl;
+			}
+			break;
+
+		case 4:
+			if (empty(head))
+				cout << " Получение последнего элемента невозможно, т.к. очередь пуста!" << endl;
+			else
+			{
+				cout << delimiter;
+				cout << "\tПолучение последнего элемента очереди." << endl;
+				cout << " Последний элемент: " << back(head) << endl;
+			}
+			break;
+
+		case 5:
+			cout << delimiter;
+			cout << "\tПроверка очереди на пустоту." << endl;
+			if (empty(head))
+				cout << " Очередь пуста!" << endl;
+			else
+				cout << " Очередь НЕ пуста!" << endl;
+			break;
+
+		case 6:
+			cout << " Количество элементов в очереди: " << size(head) << endl;
+			break;
+
+		case 7:
+			short selection;
+			submenu();
+			cout << " Ввод > "; cin >> choice;
+			while (true)
+			{
+
+				while (choice < 0 || choice > 3)
+				{
+					cout << " Упс, ошибка ввода, попробуйте снова." << endl;
+					cout << delimiter;
+					cout << " Ввод > "; cin >> choice;
+				}
+
+				switch (choice)
+				{
+				case 0: return 0;
+
+				case 1:
+					if (empty(head))
+						cout << " Вывод невозможен, очередь пуста!" << endl;
+					else
+					{
+						cout << delimiter;
+						cout << "\tВывод элемента(ов) очереди." << endl;
+						bool flag = true;
+						while (flag)
+						{
+							cout << "   1 - для вывода одного элемента;" << endl;
+							cout << "   2 - для вывода всей очереди;" << endl;
+							cout << "   3 - выход." << endl;
+							cout << " Ввод > "; cin >> selection;
+							
+							output(head, selection);
+
+							flag = flagCheck(selection);
+						}
+					}
+					break;
+
+				case 2:
+					if (empty(head))
+						cout << " Удаление недопустимо, т.к. очередь пуста!" << endl;
+					else
+					{
+						cout << delimiter;
+						cout << "\tУдаление элемента(ов) очереди." << endl;
+						bool flag = true;
+						while (flag)
+						{
+							cout << "   1 - для удаления одного элемента;" << endl;
+							cout << "   2 - для удаления всей очереди;" << endl;
+							cout << "   3 - выход." << endl;
+							cout << " Ввод > "; cin >> selection;
+
+							removing(head, selection);
+
+							flag = flagCheck(selection);
+						}
+					}
+					break;
+				
+				case 3:
+					main();
+					break;
+				}
+				if (choice)
+				{
+					cout << delimiter;
+					cout << endl << "\tЧто дальше? Ввод > "; cin >> choice;
+					cout << endl;
+				}
+			}
+			break;
+		}
+		cout << delimiter;
+		cout << endl << "\tЧто дальше? Ввод > "; cin >> choice;
+		cout << endl;
+	}
+}

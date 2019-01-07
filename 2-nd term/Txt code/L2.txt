@@ -1,0 +1,369 @@
+/*1.1.Даны два файла вещественных чисел с именами fA и fB, содержащие элементы прямоуголь-ных матриц M1 и M2 по строкам,
+причем начальный элемент каждого файла содержит количество столбцов соответствующей матрицы.
+Создать файл той же структуры с именем fC, содержащий произведение матриц M1·M2.
+Если матрицы M1 и M2 нельзя перемножать, то оставить файл fC пустым.*/
+#include "stdafx.h"
+#include <iostream>
+#include <stdio.h>
+#include <iomanip>
+
+using namespace std;
+int i, j;
+const int N = 100;
+
+int main(void)
+{
+	system("chcp 1251");
+	setlocale(0, "");
+
+	int a;
+	int n, m; errno_t err;
+	FILE *fA, *fB;
+
+
+	cout << "Введите количество строк в первой матрице : "; cin >> n;
+	cout << "Введите количество столбцов в первой матрице : "; cin >> m;
+	err = fopen_s(&fA, "fA.txt", "w");
+	if (err != 0)
+	{
+		perror("Ошибка ");
+		return EXIT_FAILURE;
+	}
+	else
+		printf("Файл fA.txt успешно открыт на запись!\n");
+	fprintf(fA, "%d", m);
+	printf("Введите элементы первой матрицы A : \n\n");
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < m; j++)
+		{
+			cout << "A[" << i << "][" << j << "]= "; cin >> a;
+			fprintf(fA, "%d", a);
+		}
+		cout << endl;
+	}
+	printf("Данные записаны в файл fA.txt\n");
+	if (fclose(fA) == EOF)
+	{
+		printf("Ошибка\n");
+		return -1;
+	}
+	else
+		printf("Файл fA.txt успешно закрыт!\n\n\n");
+
+
+	cout << "Введите количество строк во второй матрице : "; cin >> n;
+	cout << "Введите количество столбцов во второй матрице : "; cin >> m;
+	err = fopen_s(&fB, "fB.txt", "w");
+	if (err != 0)
+	{
+		perror("Ошибка ");
+		return EXIT_FAILURE;
+	}
+	else
+		printf("Файл fB.txt успешно открыт на запись!\n");
+	fprintf(fB, "%d", m);
+	printf("Введите элементы второй матрицы B : \n\n");
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < m; j++)
+		{
+			cout << "B[" << i << "][" << j << "]= "; cin >> a;
+			fprintf(fB, "%d", a);
+		}
+		cout << endl;
+	}
+	printf("Данные записаны в файл fB.txt\n");
+	if (fclose(fB) == EOF)
+	{
+		printf("Ошибка\n");
+		return -1;
+	}
+	else
+		printf("Файл fB.txt успешно закрыт!\n\n\n");
+
+
+	char sM1[N], sM2[N];
+
+	err = fopen_s(&fA, "fA.txt", "r");
+	if (err != 0)
+	{
+		perror("Ошибка открытия файла ");
+		return EXIT_FAILURE;
+	}
+	else
+		printf("Файл fA.txt успешно открыт на чтение!\n");
+
+	fgets(sM1, N, fA);
+	//Проверка, что произошло :
+	//кончился файл или это ошибка чтения
+	if (feof(fA) != 0)
+		printf("Чтение файла завершено\n");
+	else
+	{
+		printf("Ошибка чтения из файла\n");
+		return -1;
+	}
+
+	if (fclose(fA) == EOF)
+	{
+		printf("Ошибка\n");
+		return -1;
+	}
+	else
+		printf("Файл fA.txt успешно закрыт!\n");
+
+	printf("Считано из файла fA.txt : ");
+	puts(sM1);
+
+
+	err = fopen_s(&fB, "fB.txt", "r");
+	if (err != 0)
+	{
+		perror("Ошибка открытия файла ");
+		return EXIT_FAILURE;
+	}
+	else
+		printf("\nФайл fB.txt успешно открыт на чтение!\n");
+
+	fgets(sM2, N, fB);
+	//Проверка, что именно произошло :
+	//кончился файл или это ошибка чтения
+	if (feof(fB) != 0)
+		printf("Чтение файла завершено\n");
+	else
+	{
+		printf("Ошибка чтения из файла\n");
+		return -1;
+	}
+
+	if (fclose(fB) == EOF)
+	{
+		printf("Ошибка\n");
+		return -1;
+	}
+	else
+		printf("Файл fB.txt успешно закрыт!\n");
+
+	printf("Считано из файла fB.txt : ");
+	puts(sM2);
+
+
+	int m1[N][N], m2[N][N];
+	int g1 = sM1[0] - '0', t = 1;
+	int h1 = strlen(sM1) / g1;
+
+	printf("\n\nМатрица A считанная из файла fA.txt : \n\n");
+	for (i = 0; i < h1; i++)
+	{
+		for (j = 0; j < g1; j++, t++)
+		{
+			if (sM1[t] != '\0')
+			{
+				m1[i][j] = sM1[t] - '0';
+				cout << setw(4) << m1[i][j];
+			}
+		}
+		cout << endl << endl;
+	}
+	cout << endl;
+
+	int g2 = sM2[0] - '0';
+	t = 1;
+	int h2 = strlen(sM2) / g2;
+
+	printf("Матрица B считанная из файла fB.txt : \n\n");
+	for (i = 0; i < h2; i++)
+	{
+		for (j = 0; j < g2; j++, t++)
+		{
+			if (sM2[t] != '\0')
+			{
+				m2[i][j] = sM2[t] - '0';
+				cout << setw(4) << m2[i][j];
+			}
+		}
+		cout << endl << endl;
+	}
+
+	if (g1 != h2)
+		cout << "\n\nУмножение невозможно\n\n";
+	else
+	{
+		FILE *fC;
+		int m[N][N];
+		cout << "Произведение матриц A и B :\n\n";
+		for (i = 0; i < h1; i++)
+		{
+			for (j = 0; j < g2; j++)
+			{
+				m[i][j] = 0;
+				for (int k = 0; k < g1; k++)
+				{
+					m[i][j] += m1[i][k] * m2[k][j];
+				}
+				cout << setw(4) << m[i][j];
+			}
+			cout << endl << endl;
+		}
+
+		err = fopen_s(&fC, "fC.txt", "w");
+		if (err != 0)
+		{
+			perror("Ошибка\n");
+			return EXIT_FAILURE;
+		}
+		else
+			printf("Файл fC.txt успешно открыт на запись!\n");
+
+		char c = '\n', s = ' ';
+		for (i = 0; i < h1; i++)
+		{
+			for (j = 0; j < g2; j++)
+			{
+				fprintf(fC, "%d%c", m[i][j], s);
+			}
+			fprintf(fC, "%c", c);
+		}
+		printf("Данные записаны в файл fC.txt\n");
+		if (fclose(fB) == EOF)
+		{
+			printf("Ошибка\n");
+			return -1;
+		}
+		else
+			printf("Файл fC.txt успешно закрыт!\n");
+	}
+	return 0;
+}
+===============
+/*2.Компоненты файла f – целые двухзначные числа (положительные и отрицательные).
+Получить файл g, образованный из f включением только чисел кратных K.*/
+#include <iostream>
+#include <stdio.h>
+#include <iomanip>
+
+using namespace std;
+int i, j;
+const int N = 100;
+
+int main(void)
+{
+	setlocale(0, "");
+
+	int a;
+	errno_t err;
+	FILE *f, *g;
+
+
+	err = fopen_s(&f, "f.txt", "w");
+	if (err != 0)
+	{
+		perror("Ошибка ");
+		return EXIT_FAILURE;
+	}
+	else
+		printf("Файл f.txt успешно открыт на запись!\n");
+
+	char p = ' ';
+	printf("Вводите последовательность чисел, для окончания ввода введите '0'\n");
+	cin >> a;
+	while (a != 0)
+	{
+		fprintf(f, "%d%c", a, p);
+		cin >> a;
+	}
+	printf("Данные записаны в файл f.txt\n");
+	if (fclose(f) == EOF)
+	{
+		printf("Ошибка\n");
+		return -1;
+	}
+	else
+		printf("Файл f.txt успешно закрыт!\n\n");
+
+	char *str, S[N];
+	err = fopen_s(&f, "f.txt", "r");
+	if (err != 0)
+	{
+		perror("Ошибка открытия файла ");
+		return EXIT_FAILURE;
+	}
+	else
+		printf("Файл f.txt успешно открыт на чтение!\n");
+
+	str = fgets(S, N, f);
+	//Проверка, что произошло :
+	//кончился файл или это ошибка чтения
+	if (feof(f) != 0)
+		printf("Чтение файла завершено!\n");
+	else
+	{
+		printf("\nОшибка чтения из файла\n");
+		return -1;
+	}
+
+	if (fclose(f) == EOF)
+	{
+		printf("Ошибка\n");
+		return -1;
+	}
+	else
+		printf("Файл f.txt успешно закрыт!\n");
+
+	printf("Считано из файла f.txt : ");
+	puts(S);
+
+	err = fopen_s(&g, "g.txt", "w");
+	if (err != 0)
+	{
+		perror("Ошибка ");
+		return EXIT_FAILURE;
+	}
+	else
+		printf("\nФайл g.txt успешно открыт на запись!\n");
+
+
+	int K;
+	int n = 0;
+	int k;
+	int value;
+	char *Buf;
+	cout << "Введите число K : "; cin >> K;
+	for (i = 0; i < strlen(S) - 1; i++)
+	{
+		while (S[i] != ' ')
+		{
+			n++;
+			i++;
+		}
+		if (n > 1)
+		{
+			Buf = new char[n];
+			for (k = i - n, j = 0; j < n; k++, j++)
+				Buf[j] = S[k];
+
+			value = atoi(Buf);
+
+			if (value % K == 0)
+				fprintf(g, "%d%c", value, p);
+
+			n = 0;
+			delete[]Buf;
+
+		}
+		else if ((S[i - n] - '0') % K == 0)
+		{
+			fprintf(g, "%d%c", (S[i - n] - '0'), p);
+			n = 0;
+		}
+	}
+	printf("Данные записаны в файл g.txt\n");
+	if (fclose(g) == EOF)
+	{
+		printf("Ошибка\n");
+		return -1;
+	}
+	else
+		printf("Файл g.txt успешно закрыт!\n\n");
+}

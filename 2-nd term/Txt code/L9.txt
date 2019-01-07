@@ -1,0 +1,432 @@
+#include <iostream>
+using namespace std;
+
+#define N 20
+#define S 30
+
+unsigned short i;
+char delimiter[] = "-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-\n";
+
+struct list
+{
+	char surname[N];
+	char name[N];
+	char patronymic[N];
+	char address[S];
+	list *next;
+	list *prev;
+};
+
+list *head = nullptr;
+list *tail = nullptr;
+
+void menu(void);
+
+list *newElement(void);
+void insertIntoEnd(list*);
+void output(short);
+void remove(short);
+void search(char[S]);
+void removeDuplicate(void);
+
+short size();
+bool flagCheck(short);
+
+short choice;
+short selection;
+short n;
+bool flag;
+
+int main(void)
+{
+	setlocale(0, "");
+	system("chcp 1251");
+	cout << endl;
+	menu();
+	cout << " Ввод > "; cin >> choice;
+	while (true)
+	{
+		while (choice < 0 || choice > 5)
+		{
+			cout << " Упс, ошибка ввода, попробуйте снова." << endl;
+			cout << delimiter;
+			cout << " Ввод > "; cin >> choice;
+		}
+		flag = true;
+		switch (choice)
+		{
+
+		case 0: return 0;
+
+		case 1:
+			cout << delimiter;
+			cout << "\tДобавление элемента в список." << endl;
+			insertIntoEnd(newElement());
+			cout << " Элемент добавлен!" << endl;
+			break;
+
+		case 2:
+			if (head == nullptr && tail == nullptr)
+				cout << " Вывод недопустим, список пуст!" << endl;
+			else
+			{
+				cout << delimiter;
+				cout << "\tВывод элемента(ов)." << endl;
+				while (flag)
+				{
+					cout << "   1 - для вывода одного элемента;" << endl;
+					cout << "   2 - для вывода всего списка;" << endl;
+					cout << "   3 - выход." << endl;
+					cout << "\tВвод: "; cin >> selection;
+					if (selection == 1 || selection == 2)
+						output(selection);
+
+					flag = flagCheck(selection);
+				}
+			}
+			break;
+
+		case 3:
+			if (head == nullptr && tail == nullptr)
+				cout << " Удаление невозможно, список пуст!" << endl;
+			else
+			{
+				cout << delimiter;
+				cout << "\tУдаление элемента(ов)." << endl;
+				while (flag)
+				{
+					cout << "   1 - для удаления элемента списка;" << endl;
+					cout << "   2 - для удаления всего списка;" << endl;
+					cout << "   3 - выход." << endl;
+					cout << "\tВвод: "; cin >> selection;
+					if (selection == 1 || selection == 2)
+						remove(selection);
+
+					flag = flagCheck(selection);
+				}
+			}
+			break;
+
+		case 4:
+			if (head == nullptr && tail == nullptr)
+				cout << " Поиск недопустим, так как список пуст!" << endl;
+			else
+			{
+				cout << delimiter;
+				cout << "\t Поиска элемента по имени." << endl;
+				char address[N];
+				cin.ignore();
+				cout << " Введите искомый адрес: "; cin.getline(address, S);
+				search(address);
+			}
+			break;
+
+		case 5:
+			if (head == nullptr && tail == nullptr)
+				cout << " Удаление повторяющихся невозможно, список пуст!" << endl;
+			else
+			{
+				cout << delimiter;
+				cout << "\tУдаление повторяющихся элементов." << endl;
+				removeDuplicate();
+			}
+			break;
+		}
+
+		cout << delimiter;
+		cout << endl << "\tЧто дальше? Ввод > "; cin >> choice;
+		cout << endl;
+	}
+	return 0;
+}
+
+
+void menu(void)
+{
+	cout << " Введите: " << endl;
+	cout << "\t1 - для добавления элемента;" << endl;
+	cout << "\t2 - для вывода элемента(ов);" << endl;
+	cout << "\t3 - для удаления элемента(ов);" << endl;
+	cout << "\t4 - для поиска элемента по имени;" << endl;
+	cout << "\t5 - для удаления повторяющихся элементов;" << endl;
+	cout << "\t0 - для выхода." << endl;
+}
+
+list* newElement()
+{
+	list *fresh = new list;
+	cout << " Введите фамилию: "; cin >> fresh->surname;
+	cout << " Введите имя: "; cin >> fresh->name;
+	cout << " Введите отчество: "; cin >> fresh->patronymic;
+	cin.ignore();
+	cout << " Введите адрес проживания: "; cin.getline(fresh->address, S);
+	return fresh;
+}
+
+
+void insertIntoEnd(list *fresh)
+{
+	list *pPrev = tail;
+	if (tail == NULL && head == NULL)
+	{
+		fresh->next = NULL;
+		fresh->prev = NULL;
+		tail = fresh;
+		head = fresh;
+	}
+	else
+	{
+		pPrev->next = fresh;
+		fresh->next = NULL;
+		fresh->prev = pPrev;
+		tail = fresh;
+	}
+}
+
+void output(short selection)
+{
+	cout << endl;
+	if (selection == 1)
+	{
+		cout << " Введите номер элемента: "; cin >> n;
+		if (n > size())
+			cout << " Ошибка! Всего элементов в списке - " << size() << '.' << endl;
+
+		else if (n <= 0)
+			cout << " Ошибка, элемента с данным номером не существует!" << endl;
+
+		else
+		{
+			list *ptr = head;
+			for (i = 1; i < n; i++)
+				ptr = ptr->next;
+
+			cout << endl;
+			cout << " Элемент №" << i << endl;
+			cout << " Фамилия: " << ptr->surname << endl;
+			cout << " Имя: " << ptr->name << endl;
+			cout << " Отчесвто: " << ptr->patronymic << endl;
+			cout << " Адрес проживания: " << ptr->address << endl;
+		}
+	}
+
+	if (selection == 2)
+	{
+		list *ptr = head;
+		cout << " Весь список: " << endl << endl;
+		for (i = 1; ptr != nullptr; i++)
+		{
+			cout << " Элемент №" << i << endl;
+			cout << " Фамилия: " << ptr->surname << endl;
+			cout << " Имя: " << ptr->name << endl;
+			cout << " Отчесвто: " << ptr->patronymic << endl;
+			cout << " Адрес проживания: " << ptr->address << endl;
+			if (ptr = ptr->next)
+				cout << endl;
+		}
+	}
+}
+
+
+void remove(short selection)
+{
+	cout << endl;
+	if (selection == 1)
+	{
+		cout << " Введите номер удаляемого элемента: "; cin >> n;
+		if (n > size())
+			cout << " Ошибка! Всего элементов в списке - " << size() << '.' << endl;
+
+		else if (n <= 0)
+			cout << " Ошибка, элемента с данным номером не существует!" << endl;
+
+		else
+		{
+			list *ptr = head;
+
+			if (n == 1)
+			{
+				if (head->next)
+				{
+					head = head->next;
+					head->prev = nullptr;
+				}
+
+				else if (head == tail)
+				{
+					head = head->next;
+					tail = tail->prev;
+				}
+			}
+
+			else if (n == size())
+			{
+				ptr = tail;
+				tail = tail->prev;
+				tail->next = nullptr;
+			}
+
+			else
+			{
+				list *prevSibling = nullptr;
+				for (i = 1; i < n; i++)
+				{
+					prevSibling = ptr;
+					ptr = ptr->next;
+				}
+
+				list *nextSibling = ptr->next;
+				prevSibling->next = nextSibling;
+				nextSibling->prev = prevSibling;
+			}
+			delete ptr;
+			cout << " Элемент с номером " << n << " удалён!" << endl;
+		}
+	}
+
+	if (selection == 2)
+	{
+		list *next;
+		while (head != nullptr)
+		{
+			next = head->next;
+			delete head;
+			head = next;
+		}
+		tail = nullptr;
+		cout << " Все элементы списка удалены!" << endl;
+	}
+
+	flag = flagCheck(selection);
+}
+
+
+void search(char address[N])
+{
+	list *ptr = tail;
+	short counter = 0;
+	while (ptr != nullptr)
+	{
+		if (!strcmp(address, ptr->address))
+			counter++;
+		ptr = ptr->prev;
+	}
+
+	cout << endl;
+	if (counter == 0)
+		cout << " Совпадений не найдено!" << endl;
+
+	else
+	{
+		if (counter == 1)
+			cout << " Совпадение найдено!" << endl;
+
+		if (counter > 1)
+			cout << " Совпадения найдены!" << endl;
+
+		ptr = head;
+		for (i = 1; ptr != nullptr; i++)
+		{
+			if (!strcmp(address, ptr->address))
+			{
+				cout << endl;
+				cout << " Элемент №" << i << endl;
+				cout << " Фамилия: " << ptr->surname << endl;
+				cout << " Имя: " << ptr->name << endl;
+				cout << " Отчесвто: " << ptr->patronymic << endl;
+				cout << " Адрес проживания: " << ptr->address << endl;
+			}
+			ptr = ptr->next;
+		}
+	}
+}
+
+
+void removeDuplicate()
+{
+	list *ptr = head;
+	short counter = 0;
+	while (ptr != nullptr)
+	{
+		list *temp = ptr->next;
+		while (temp != nullptr)
+		{
+			if (!strcmp(ptr->surname, temp->surname) || !strcmp(ptr->name, temp->name) || !strcmp(ptr->patronymic, temp->patronymic) || !strcmp(ptr->address, temp->address))
+				counter++;
+			temp = temp->next;
+		}
+		ptr = ptr->next;
+	}
+
+	if (counter == 0)
+		cout << " Повторяющихся элементов не найдено!" << endl;
+
+	else
+	{
+		if (counter == 1)
+			cout << " Повторяющийся элемент найден!" << endl;
+
+		if (counter > 1)
+			cout << " Повторяющиеся элементы найдены!" << endl;
+
+		ptr = head;
+		while (ptr != nullptr)
+		{
+			list *temp = ptr->next;
+			while (temp != nullptr)
+			{
+				if (!strcmp(ptr->surname, temp->surname) || !strcmp(ptr->name, temp->name) || !strcmp(ptr->patronymic, temp->patronymic) || !strcmp(ptr->address, temp->address))
+				{
+					list *removable = temp;
+					if (temp == tail)
+					{
+						tail = tail->prev;
+						tail->next = nullptr;
+					}
+					else
+					{
+						list *nextSibling = temp->next;
+						list *prevSibling = temp->prev;
+						prevSibling->next = nextSibling;
+						nextSibling->prev = prevSibling;
+					}
+					temp = temp->next;
+					delete removable;
+				}
+				else
+					temp = temp->next;
+			}
+			ptr = ptr->next;
+		}
+		if (counter == 1)
+			cout << " Повторяющийся элемент удалён!" << endl;
+		else if (counter > 1)
+			cout << " Повторяющиеся элементы удалёны!" << endl;
+	}
+}
+
+
+short size()
+{
+	short size = 0;
+	list *ptr = tail;
+	while (ptr != nullptr)
+	{
+		size++;
+		ptr = ptr->prev;
+	}
+	return size;
+}
+
+
+bool flagCheck(short selection)
+{
+	if (selection == 1 || selection == 2 || selection == 3)
+		return false;
+	else
+	{
+		cout << endl;
+		cout << " Упс, ошибка ввода, попробуйте снова." << endl;
+		return true;
+	}
+}

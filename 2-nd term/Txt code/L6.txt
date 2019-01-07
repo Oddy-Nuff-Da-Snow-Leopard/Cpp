@@ -1,0 +1,498 @@
+/*Программа должна содержать меню с пунктами: добавление элемента, вывод списка в консольное окно,
+удаление элемента, поиск элемента,
+запись списка в файл, считывание списка из файла.
+
+Создать список, содержащий элементы целого типа.
+Найти сумму положительных элементов или выдать сообщение, что положительных элементов нет.
+*/
+
+
+#include <iostream>
+#include <fstream>
+#include <stdio.h>
+
+#define N 10
+
+using namespace std;
+
+short i;
+char delimiter[] = "-------------------------------------------------\n";
+
+struct list
+{
+	short number;
+	list *next;
+};
+
+list *head = nullptr;
+
+void menu(void);
+
+void listElemAdd(list**);
+
+void listOutput(list*);
+
+list *listDeleting(list*);
+
+void listElemSearch(list*);
+
+int inFile(list*);
+list *outFile(list*);
+
+list *listElemFromFile(list**, const char*);
+
+bool check(short);
+
+short listElemCounter = 0;
+
+short choice, number, selection;
+
+bool flag;
+
+short listElemNumber;
+short method;
+
+int main(void)
+{
+	setlocale(0, "");
+	system("chcp 1251");
+	cout << endl;
+	menu();
+	cout << "Ввод: "; cin >> choice;
+	cout << endl;
+	while(true)
+	{
+		while (choice < 1 || choice > 7)
+		{
+			cout << " Упс, ошибка ввода, попробуйте снова." << endl;
+			cout << delimiter << endl;
+			cout << "\tЧто дальше? [Ввод]: "; cin >> choice;
+			cout << endl;
+		}
+		flag = true;
+		switch (choice)
+		{
+		case 1: listElemAdd(&head); break;
+
+		case 2: listOutput(head); break;
+			
+		case 3: head = listDeleting(head); break;
+
+		case 4: listElemSearch(head); break;
+
+		case 5: inFile(head); break;
+
+		case 6: head = outFile(head); break;
+
+		case 7: return 0;
+		}
+		cout << delimiter;
+		cout << endl << "\tЧто дальше? [Ввод]: "; cin >> choice;
+		cout << endl;
+	} 
+}
+
+
+void menu(void)
+{
+	cout << "Введите: " << endl;
+	cout << "\t1 - для добавления элемента;" << endl;
+	cout << "\t2 - для вывовода элемента(ов);" << endl;
+	cout << "\t3 - для удаления элемента(ов);" << endl;
+	cout << "\t4 - для поиска суммы полож. элементов;" << endl;
+	cout << "\t5 - для записи элемента(ов) в файл;" << endl;
+	cout << "\t6 - для чтения списка из файла;" << endl;
+	cout << "\t7 - для выхода." << endl;
+}
+
+
+void listElemAdd(list **head)
+{
+	cout << delimiter;
+	cout << "\tДобавление элемента." << endl;
+	cout << " Введите целое число: "; cin >> number;
+	list *fresh = new list;
+	fresh->number = number;
+	fresh->next = *head;
+	*head = fresh;
+	listElemCounter++;
+	cout << " Элемент добавлен!" << endl;
+}
+
+
+void listOutput(list *head)
+{
+	if (head == nullptr)
+		cout << " Вывод недопустим, список пуст!" << endl;
+	else
+	{
+		cout << delimiter;
+		cout << "\tВывод элемента(ов)." << endl;
+		while (flag)
+		{
+			cout << "   1 - для вывода одного элемента;" << endl;
+			cout << "   2 - для вывода всего списка;" << endl;
+			cout << "   3 - выход." << endl;
+			cout << "\tВвод: "; cin >> selection;
+
+			if (selection == 1)
+			{
+				cout << " Введите номер элемента: "; cin >> listElemNumber;
+				if (listElemNumber > listElemCounter)
+				{
+					cout << " Ошибка! Всего элементов в списке - " << listElemCounter << '.' << endl;
+				}
+				else if (listElemNumber <= 0)
+				{
+					cout << " Ошибка, элемента с данным номером не существует!" << endl;
+				}
+				else
+				{
+					for (i = 1; i < listElemNumber; i++)
+					{
+						head = head->next;
+					}
+					cout << " Целое число элемента №" << listElemNumber << ": ";
+					cout << head->number << endl;
+				}
+			}
+
+			else if (selection == 2)
+			{
+				cout << " Весь список: " << endl;
+				while (head != nullptr)
+				{
+					cout << " --> " << head->number;
+					head = head->next;
+				}
+				cout << " --> NULL" << endl;
+			}
+
+			flag = check(selection);
+		}
+	}
+}
+
+
+list *listDeleting(list *head)
+{
+	if (head == nullptr)
+		cout << " Удаление невозможно, список пуст!" << endl;
+	else
+	{
+		cout << delimiter;
+		cout << "\tУдаление элемента(ов)." << endl;
+		while (flag)
+		{
+			cout << "   1 - для удаления элемента списка;" << endl;
+			cout << "   2 - для удаления всего списка;" << endl;
+			cout << "   3 - выход." << endl;
+			cout << "\tВвод: "; cin >> selection;
+			if (selection == 1)
+			{
+				cout << " Введите номер удаляемого элемента: "; cin >> listElemNumber;
+				if (listElemNumber > listElemCounter)
+				{
+					cout << " Ошибка! Всего элементов в списке - " << listElemCounter << '.' << endl;
+					return head;
+				}
+				else if (listElemNumber <= 0)
+				{
+					cout << " Ошибка, элемента с данным номером не существует!" << endl;
+					return head;
+				}
+				else
+				{
+					listElemCounter--;
+
+					if (listElemNumber == 1)
+					{
+						list *newHead = head->next;
+						delete head;
+						return newHead;
+					}
+
+					else
+					{
+						list *prevSibling = nullptr, *start = head;
+
+						for (i = 1; i < listElemNumber; i++)
+						{
+							prevSibling = head;
+							head = head->next;
+							i++;
+						}
+
+						list *nextSibling = head->next;
+						prevSibling->next = nextSibling;
+
+						delete head;
+						cout << " Элемент с номером " << listElemNumber << " удалён!" << endl;
+						return start;
+					}
+					
+				}
+			}
+
+			else if (selection == 2)
+			{
+				list *next;
+				while (head != nullptr)
+				{
+					next = head->next;
+					delete head;
+					head = next;
+				}
+				cout << " Все элементы списка удалены!" << endl;
+				listElemCounter = 0;
+				return head;
+			}
+
+			else if (selection == 3)
+				return head;
+
+			flag = check(selection);
+		}
+	}
+	return head;
+}
+
+
+void listElemSearch(list* head)
+{
+	if (head == nullptr)
+		cout << " Поиск недопустим, так как список пуст!" << endl;
+	else
+	{
+		unsigned short sum = 0;
+		while (head != nullptr)
+		{
+			if (head->number > 0)
+			{
+				sum += head->number;
+			}
+			head = head->next;
+		}
+		if (sum)
+			cout << " Сумма положительных элементов списка: " << sum << endl;
+		else
+			cout << " Положительные элементы в списке отсутствуют!" << endl;
+	}
+}
+
+
+
+int inFile(list *head)
+{
+	if (head == nullptr)
+		cout << " Запись в файл невозможна, список пуст!" << endl;
+	else
+	{
+		cout << delimiter;
+		cout << "\tЗапись в файл" << endl;
+		while (flag)
+		{
+			cout << " Выберете способ записи в файл: " << endl;
+			cout << "   1 - с помощью C;" << endl;
+			cout << "   2 - с помощью C++;" << endl;
+			cout << "   3 - выход." << endl;
+			cout << "\tВвод: "; cin >> method;
+
+			if (method == 1)
+				cout << endl << "\tЗапись с помощью С" << endl;
+			else if (method == 2)
+				cout << endl << "\tЗапись с помощью C++" << endl;
+			else if (method == 3)
+				return 0;
+
+			flag = check(method);
+		}
+
+		flag = true;
+		while (flag) 
+		{
+			cout << "   1 - для записи одного элемента;" << endl;
+			cout << "   2 - для записи всех элементов;" << endl;
+			cout << "   3 - выход." << endl;
+			cout << "\tВвод: "; cin >> selection;
+
+			if (selection == 3)
+				return 0;
+
+			flag = check(selection);
+		}
+		char *name = new char[15];
+		cout << " Введите имя файла с расширением: "; cin >> name;
+	
+		char number[] = " Число в поле number: ";
+		char adress[] = " Адрес следующего элемента: ";
+		i = 1;
+
+		if (method == 1)
+		{
+			FILE * file;
+			errno_t err;
+
+			err = fopen_s(&file, name, "w");
+			if (err != 0)
+			{
+				perror(" Ошибка открытия файла!");
+				return EXIT_FAILURE;
+			}
+			else
+				cout << " Файл " << name << " успешно открыт на запись!" << endl;
+
+			char _newLine = '\n';
+			fprintf(file, "Запись произведена с помощью C%c%c", _newLine, _newLine);
+
+			if (selection == 1)
+			{
+				cout << " Введите номер записываемого элемента: "; cin >> listElemNumber;
+				while (i < listElemNumber)
+				{
+					head = head->next;
+					i++;
+				}
+				fprintf(file, "Элемент №%d%c%s%d%c%s%p%c%c", i, _newLine, number, head->number, _newLine, adress, head->next, _newLine, _newLine);
+			}
+
+			else if (selection == 2)
+			{
+
+				while (head)
+				{
+					fprintf(file, "Элемент №%d%c%s%d%c%s%p%c%c", i, _newLine, number, head->number, _newLine, adress, head->next, _newLine, _newLine);
+					head = head->next;
+					i++;
+				}
+			}
+
+			cout << " Данные записаны в файл " << name << '!' << endl;
+			if (fclose(file) == EOF)
+			{
+				printf(" Ошибка закрытия файла!\n");
+				return EXIT_FAILURE;
+			}
+			else
+				cout << " Файл " << name << " успешно закрыт!" << endl;
+		}
+
+
+		if (method == 2)
+		{
+			ofstream file;
+
+			file.open(name, ios_base::out, ios_base::trunc);
+			if (file.is_open())
+				cout << " Файл " << name << " успешно открыт для записи!" << endl;
+			else
+				cout << " Ошибка открытия файла " << name << '!' << endl;
+
+			file << "Запись произведена с помощью C++" << endl << endl;
+
+			if (selection == 1)
+			{
+				cout << " Введите номер записываемого элемента: "; cin >> listElemNumber;
+				while (i < listElemNumber)
+				{
+					head = head->next;
+					i++;
+				}
+				file << "Элемент №" << i << endl << number << head->number << endl << adress << head->next << endl;
+			}
+
+			else if (selection == 2)
+			{
+				while (head)
+				{
+					file << "Элемент №" << i << endl << number << head->number << endl << adress << head->next << endl << endl;
+					head = head->next;
+					i++;
+				}
+			}
+
+			file.close();
+			cout << " Файл " << name << " успешно закрыт!" << endl;
+		}
+		delete[]name;
+	}return 0;
+}
+
+
+list *outFile(list *head)
+{
+	cout << delimiter;
+	flag = true;
+	while (flag)
+	{
+		cout << "\tЧтение из файла" << endl;
+		cout << "   1 - для чтения одного элемента;" << endl;
+		cout << "   2 - для чтения всех элементов;" << endl;
+		cout << "   3 - выход." << endl;
+		cout << "\tВвод: "; cin >> selection;
+
+		if (selection == 3)
+			return 0;
+
+		flag = check(selection);
+	}
+
+	char *name = new char[15];
+	cout << " Введите имя файла с расширением: "; cin >> name;
+
+	i = 1;
+
+	ifstream file;
+	file.open(name, ios_base::in);
+	if (file.is_open())
+		cout << " Файл " << name << " успешно открыт для чтения!" << endl;
+	else
+		cout << " Ошибка открытия файла " << name << '!' << endl;
+
+	char str[N];
+	int n;
+	if (selection == 1)
+	{
+		cout << " Введите номер считываемого элемента: "; cin >> n;
+		while (i <= n)
+		{
+			file.getline(str, N);
+			i++;
+		}
+		head = listElemFromFile(&head, str);
+	}
+
+	else if (selection == 2)
+	{
+		while (file.getline(str, N))
+		{
+			head = listElemFromFile(&head, str);
+		}
+	}
+	file.close();
+	cout << " Файл " << name << " успешно закрыт!" << endl;
+	return head;
+}
+
+
+list *listElemFromFile(list **head, const char* str)
+{
+	list *fresh = new list;
+	fresh->number = atoi(str);
+	fresh->next = *head;
+	*head = fresh;
+	listElemCounter++;
+	return *head;
+}
+
+
+bool check(short check)
+{
+	if (check == 1 || check == 2 || check == 3)
+		return false;
+	else
+	{
+		cout << "Упс, ошибка ввода, попробуйте снова." << endl << endl;
+		return true;
+	}
+}

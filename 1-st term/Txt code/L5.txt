@@ -1,0 +1,94 @@
+Цикл for
+#include <iostream>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(LC_CTYPE, "Russian");
+	int i[3] = { 9,-1.4,5 }, y = 2;
+	float x = 0.9, t = 6.96e-5, z, q;
+	for (int n = 0; n <3; n++) 
+        {
+		z = t*pow(y, 2) - sqrt(i[n] + x)*tan(y);
+		q = sqrt(z*(z + 5))*log(y);
+		cout << "Значение z = " << z << endl;
+		cout << "Значение q = " << q << endl << endl;
+	}
+	getch();
+}
+===============
+Цикл while
+#include <iostream>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(LC_CTYPE, "Russian");
+	int y = 2;
+	float i = 1;
+	float x = 0.9, t = 6.96e-5, z, q;
+	while (i < 2.1)
+	{
+		z = t*pow(y, 2) - sqrt(i + x)*tan(y);
+		q = sqrt(z*(z + 5))*log(y);
+		cout << "Значение z = " << z << endl;
+		cout << "Значение q = " << q << endl << endl;
+		i += 0.2;
+	}
+	getch();
+}
+===============
+Двойной цикл
+#include <iostream>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(LC_CTYPE, "Russian");
+	int y = 2;
+	double x[3] = { 0.7, -1, 9 }, i[3] = { 9,-1.4,5 }, z, q, t = 2;
+	do
+	{
+		for (int n = 0; n < 3; n++)
+		{
+			z = t*pow(y, 2) - sqrt(i[n] + x[n])*tan(y);
+			q = sqrt(z*(z + 5))*log(y);
+			cout << "Значение z = " << z << endl;
+			cout << "Значение q = " << q << endl << endl;
+			t += 0.2;
+		}
+	} while (t < 3.1);
+	getch();
+}
+===============
+3. Дана последовательность ненулевых целых чисел, которая заканчивается числом 0.Определить, сколько раз в этой последовательности меняется знак.
+#include <iostream>
+using namespace std;
+void main()
+{
+	setlocale(LC_CTYPE, "Russian");
+	int x, y, z = 0;
+
+	cout<<"Вводите последовательность чисел. Для окончания ввода введите '0' "<<endl;
+	cin >> x;
+	if (x>0)
+		y = 1;
+	else
+		y = 0;
+
+	while (x != 0)
+	{
+		if (x<0 & z == 1)
+		{
+			y = 0;
+			z++;
+		}
+		if (x>0 & y == 0)
+		{
+			y = 1;
+			z++;
+		}	cin >> x;
+	}
+	cout << "Количество смены знаков " << z << endl;
+}
+

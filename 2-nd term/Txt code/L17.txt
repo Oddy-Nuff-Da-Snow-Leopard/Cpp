@@ -1,0 +1,135 @@
+//Сортировка пузырьком, сортировка подсчетом, сортировка Хоара
+#include <iostream>
+#include <ctime>
+#include "conio.h"
+using namespace std;
+
+int arraySize;
+int i, j;
+int temp;
+clock_t t1, t2;
+
+
+void output(int*);
+
+void bubbleSorting(int*);
+void countingSorting(int*, int*);
+void quickSorting(int *, int);
+
+
+int main()
+{
+	setlocale(0, "");
+	srand((unsigned)time(NULL));
+
+	int *A1, *A2, *A3;
+
+	cout << "Enter the size of the array: "; cin >> arraySize;
+	A1 = new int[arraySize];
+	for (i = 0; i < arraySize; i++)
+		A1[i] = rand() % 10;
+	cout << endl << "Random array A: " << endl;
+	output(A1);
+
+	A2 = new int[arraySize];
+	memcpy(A2, A1, sizeof(int) * arraySize);
+
+	A3 = new int[arraySize];
+	memcpy(A3, A2, sizeof(int) * arraySize);
+
+	cout << endl << "  Bubble sorting" << endl;
+	t1 = clock();
+	bubbleSorting(A1);
+	t2 = clock();
+	cout << " Algorithm took " << (long double)(t2 - t1) / 1000.0 << " seconds" << endl;
+	//cout << " Sorted array: " << endl;
+    //output(A1);
+	delete[] A1;
+
+
+	int *B = new int[arraySize];
+	cout << endl << "  Counting sorting" << endl;
+	t1 = clock();
+	countingSorting(A2, B);
+	t2 = clock();
+	delete[] A2;
+	cout << " Algorithm took " << (long double)(t2 - t1) / 1000.0 << " seconds" << endl;
+	//cout << " Sorted array: " << endl;
+	//output(B);
+	delete[] B;
+
+
+	cout << endl << "  Quick sorting" << endl;
+	t1 = clock();
+	quickSorting(A3, arraySize - 1);
+	t2 = clock();
+	cout << " Algorithm took " << (long double)(t2 - t1) / 1000.0 << " seconds" << endl;
+	//cout << " Sorted array: " << endl;
+	//output(A3);
+	delete[] A3;
+
+
+	return _getch();
+}
+
+
+void output(int *A)
+{
+	for (i = 0; i < arraySize; i++)
+		cout << A[i] << ' ';
+	cout << endl;
+}
+
+
+void bubbleSorting(int *A)
+{
+	for (i = 0; i < arraySize; i++)
+	{
+		for (j = 0; j < arraySize - 1; j++)
+		{
+			if (A[j] > A[j + 1])
+			{
+				temp = A[j];
+				A[j] = A[j + 1];
+				A[j + 1] = temp;
+			}
+		}
+	}
+}
+
+
+void countingSorting(int *A, int *B)
+{
+	int k;
+	for (i = 0; i < arraySize; ++i)
+	{
+		for (k = 0, j = 0; j < arraySize; ++j)
+			if (A[j] < A[i] || (A[j] == A[i] && i < j))
+				k++;
+		B[k] = A[i];
+	}
+}
+
+
+void quickSorting(int *A, int n)
+{
+	int i = 0, j = n;
+	int temp;
+	int p = A[n / 2];
+	do
+	{
+		while (A[i] < p)  i++;
+		while (A[j] > p)  j--;
+		if (i <= j)
+		{
+			temp = A[j];  A[j] = A[i];
+			A[i] = temp;
+			i++; j--;
+		}
+	} while (i <= j);
+
+	if (j > 0)
+		quickSorting(A, j);
+	if (i < n)
+		quickSorting(A + i, n - i);
+}

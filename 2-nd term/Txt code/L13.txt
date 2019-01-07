@@ -1,0 +1,257 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+vector <short> heap;
+
+void menu(void);
+
+void add(short);
+void printAsArray(void);
+
+short extractMax(void);
+short extractMin(void);
+bool remove(short);
+
+void siftUp(short);
+void siftDown(short);
+
+int main(void)
+{
+	setlocale(0, "");
+	char delimiter[] = "-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-\n";
+	system("mode con cols=59 lines=35");
+	short choice;
+	short key;
+	menu();
+	cout << " Ввод > "; cin >> choice;
+
+	while (true)
+	{
+		while (choice < 0 || choice > 7)
+		{
+			cout << " Упс, ошибка ввода, попробуйте снова." << endl;
+			cout << delimiter;
+			cout << " Ввод > "; cin >> choice;
+		}
+		switch (choice)
+		{
+
+		case 0: return 0;
+
+		case 1:
+			cout << delimiter;
+			cout << " Для завершения добавления элементов введите ключ равный 0" << endl;
+			cout << " Ключ элемента " << heap.size() + 1 << ": "; cin >> key;
+			while (key)
+			{
+				add(key);
+				cout << " Элемент добавлен!" << endl;
+				cout << " Ключ элемента " << heap.size() + 1 << ": "; cin >> key;
+			}
+			break;
+
+		case 2:
+			if (heap.empty())
+				cout << " Вывод бинарной кучи невозможен, она пуста!" << endl;
+			else
+			{
+				cout << delimiter;
+				cout << " Бинарная куча в виде массива:" << endl;
+				printAsArray();
+			}
+			break;
+
+		case 3: 
+			if (heap.empty())
+				cout << " Извлечь максимальный элемент невозможно, куча пуста!" << endl;
+			else
+				cout << delimiter <<" Максимальный элемент: " << extractMax() << endl;
+			break;
+
+		case 4:
+			if (heap.empty())
+				cout << " Извлечь минимальный элемент невозможно, куча пуста!" << endl;
+			else
+				cout << delimiter << " Минимальный элемент: " << extractMin() << endl;
+			break;
+
+		case 5:
+			if (heap.empty())
+				cout << " Удалить опредёленный элемент невозможно, куча пуста!" << endl;
+			else
+			{
+				cout << delimiter;
+				printAsArray();
+				short value;
+				cout << " Введите значение элемента, который необходимо удалить: "; cin >> value;
+				if (remove(value))
+					cout << " Элемент успешно удалён!" << endl;
+				else cout << " Элемент отсутствует в куче!" << endl;
+			}
+			break;
+
+		case 6: 
+			if (heap.empty())
+				cout << " Куча и так пуста!" << endl;
+			else
+			{
+				cout << delimiter;
+				heap.clear();
+				cout << " Куча очищена!" << endl;
+			}
+
+
+		}
+		cout << delimiter;
+		cout << endl << "\tЧто дальше? Ввод > "; cin >> choice;
+		cout << endl;
+	}
+	return 0;
+}
+
+
+void menu(void)
+{
+	cout << " Введите: " << endl;
+	cout << "  1 - для добавления элементов в кучу;" << endl;
+	cout << "  2 - для вывода бинарной кучи;" << endl;
+	cout << "  3 - для извлечения максимального элемента;" << endl;
+	cout << "  4 - для извлечения минимального элемента;" << endl;
+	cout << "  5 - для удаления определённого элемента;" << endl;
+	cout << "  6 - для очистки кучи;" << endl;
+	cout << "  0 - для выхода." << endl;
+}
+
+
+void add(short key)
+{
+	heap.push_back(key);
+	siftUp((short)heap.size() - 1);
+}
+
+
+void printAsArray(void)
+{
+	for (short i = 0; i < (short)heap.size(); i++)
+		cout << ' ' << heap[i];
+	cout << endl;
+}
+
+
+short extractMax(void) 
+{
+	short max = heap[0];
+	heap[0] = heap.back();
+	heap.pop_back();
+	siftDown(0);
+	return max;
+}
+
+
+short extractMin(void)
+{
+	short min = heap[0];
+	short j = 0;
+	for (short i = 1; i < (short)heap.size(); i++)
+	{
+		if (min > heap[i])
+		{
+			min = heap[i];
+			j = i;
+		}
+	}
+
+	if (j == (heap.size() - 1))
+		heap.pop_back();
+
+	else
+	{
+		heap[j] = heap.back();
+		heap.pop_back();
+		siftUp(j);
+	}
+
+	return min;
+}
+
+
+bool remove(short value)
+{
+	if (value == heap.front())
+	{
+		heap[0] = heap.back();
+		heap.pop_back();
+		siftDown(0);
+	}
+
+	else if (value == heap.back())
+		heap.pop_back();
+
+	else 
+	{
+		short i;
+		bool flag = false;
+		for (i = 0; i < (short)heap.size(); i++)
+		{
+			if (heap[i] == value)
+			{
+				flag = true;
+				break;
+			}
+		}
+
+		if (!flag)
+			return false;
+
+		else
+		{
+			heap[i] = heap.back();
+			heap.pop_back();
+			siftUp(i);
+			siftDown(i);
+		}
+	}
+	return true;
+}
+
+
+void siftUp(short i)
+{
+	short parent = (i - 1) / 2;
+	while (i > 0 && heap[parent] < heap[i])
+	{
+		short temp = heap[i];
+		heap[i] = heap[parent];
+		heap[parent] = temp;
+
+		i = parent;
+		parent = (i - 1) / 2;
+	}
+}
+
+
+void siftDown(short i)
+{
+	short leftChild, rightChild, largestChild;
+	while (true) {
+
+		leftChild = 2 * i + 1;
+		rightChild = 2 * i + 2;
+		largestChild = i;
+
+		if (leftChild < (short)heap.size() && heap[leftChild] > heap[largestChild])
+			largestChild = leftChild;
+
+		if (rightChild < (short)heap.size() && heap[rightChild] > heap[largestChild])
+			largestChild = rightChild;
+
+		if (largestChild == i)
+			return;
+
+		short temp = heap[i];
+		heap[i] = heap[largestChild];
+		heap[largestChild] = temp;
+		i = largestChild;
+	}
+}

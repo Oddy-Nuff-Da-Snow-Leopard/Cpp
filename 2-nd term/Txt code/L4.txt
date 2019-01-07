@@ -1,0 +1,497 @@
+/*Горожанин.Ф.И.О., дата рождения, адрес, пол(м, ж).Реализовать выборку по году рождения.
+В программу должны войти функции :
+-	ввод элементов структуры с клавиатуры;
+-	вывод элементов структуры в консольное окно;
+-	удаление заданной структурированной переменной;
+-       изменение информации;
+-	поиск информации;
+-	запись информации в файл;
+-	чтение данных из файла.*/
+
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+#define N 25
+#define Size 30
+
+int i;
+char delimiter[] = "===============================================\n";
+
+void input();
+void output();
+void remove();
+void change();
+void search();
+int INfile();
+int OUTfile();
+
+struct Citizen
+{
+	char surname[N];
+	char name[N];
+	char patronymic[N];
+	struct dayOfBirth
+	{
+		char day[3];
+		char month[3];
+		int year;
+	}B[Size];
+	char address[N];
+	char gender;
+};
+
+Citizen A[Size];
+Citizen fail;
+
+
+int choice;
+int currentSize = 0;
+int selection, number;
+
+
+int main(void)
+{
+	setlocale(0, "");
+	system("chcp 1251");
+	cout << endl;
+	cout << "Введите: " << endl;
+	cout << "\t1 - для ввода новой записи;" << endl;
+	cout << "\t2 - для вывода записи(ей);" << endl;
+	cout << "\t3 - для удаления записи;" << endl;
+	cout << "\t4 - для изменения записи;" << endl;
+	cout << "\t5 - для поиска Жителя по году рождения;" << endl;
+	cout << "\t6 - для записи информации в файл;" << endl;
+	cout << "\t7 - для чтения информации из файла;" << endl;
+	cout << "\t8 - для выхода." << endl;
+	a:
+	cout << "\t[Ввод]: "; cin >> choice;
+
+
+	do
+	{
+		if (choice < 1 || choice > 8)
+		{
+			cout << "Ошибка ввода, попробуйте снова." << endl;
+			goto a;
+		}
+		else cout << endl;
+
+		switch (choice)
+		{
+		case 1: input(); break;
+		case 2: output(); break;
+		case 3: remove(); break;
+		case 4: change(); break;
+		case 5: search(); break;
+		case 6: INfile(); break;
+		case 7: OUTfile(); break;
+		}
+	} while (choice != 8);
+
+	return 0;
+}
+
+void input()
+{
+	cout << delimiter;
+	cout << "\tНовая запись." << endl;
+	cout << "     Запись о жителе №" << currentSize + 1 << endl;
+	if (currentSize < Size)
+	{
+		cout << " Фамилия: "; cin >> A[currentSize].surname;
+
+		cout << " Имя: "; cin >> A[currentSize].name;
+
+		cout << " Отчество: "; cin >> A[currentSize].patronymic;
+
+		cout << " Дата рождения" << endl;
+		cout << "   День: "; cin >> A[currentSize].B[currentSize].day;
+		cout << "   Месяц: "; cin >> A[currentSize].B[currentSize].month;
+		cout << "   Год: "; cin >> A[currentSize].B[currentSize].year;
+
+		cin.ignore();
+		cout << " Адрес проживания: "; cin.getline(A[currentSize].address, Size);
+
+		cout << " Пол: "; cin >> A[currentSize].gender;
+		cout << delimiter;
+		currentSize++;
+	}
+	else
+		cout << " Введено максимальное количество записей.";
+
+	cout << endl << "\tЧто дальше? [Ввод]: "; cin >> choice;
+}
+
+void output()
+{
+	if (!currentSize)
+		cout << " Записи отсутствуют!" << endl;
+	else
+	{
+		cout << delimiter;
+		cout << "\tВывод записи(ей)." << endl;
+		a:
+		cout << "   1 - для вывода одной записи;" << endl;
+		cout << "   2 - для вывода всех записей." << endl;
+		cout << "   3 - выход." << endl;
+		cout << "\tВвод: "; cin >> selection;
+		if (selection == 1)
+		{
+			cout << " Введите номер записи: "; cin >> number;
+			cout << " Запись о жителе №" << number << endl;
+
+			cout << " Фамилия: " << A[number - 1].surname << endl;
+
+			cout << " Имя: " << A[number - 1].name << endl;
+
+			cout << " Отчество: " << A[number - 1].patronymic << endl;
+
+			cout << " Дата рождения: ";
+			cout << A[number - 1].B[number - 1].day;
+			cout << '.' << A[number - 1].B[number - 1].month;
+			cout << '.' << A[number - 1].B[number - 1].year << "г." << endl;
+
+			cout << " Адрес проживания: " << A[number - 1].address << endl;
+
+			cout << " Пол: " << A[number - 1].gender << endl;
+		}
+
+		else if (selection == 2)
+		{
+			for (i = 0; i < currentSize; i++)
+			{
+				cout << " Запись о жителе №" << i + 1 << endl;
+
+				cout << " Фамилия: " << A[i].surname << endl;
+
+				cout << " Имя: " << A[i].name << endl;
+
+				cout << " Отчество: " << A[i].patronymic << endl;
+
+				cout << " Дата рождения: ";
+				cout << A[i].B[i].day;
+				cout << '.' << A[i].B[i].month;
+				cout << '.' << A[i].B[i].year << "г." << endl;
+
+				cout << " Адрес проживания: " << A[i].address << endl;
+
+				cout << " Пол: " << A[i].gender << endl;
+				if (i != currentSize - 1)
+					cout << endl;
+			}
+		}
+		else if (selection != 3)
+		{
+			cout << " Ошибка ввода, попробуйте снова." << endl;
+			goto a;
+		}
+	}
+	cout << delimiter;
+	cout << endl << "\tЧто дальше? [Ввод]: "; cin >> choice;
+}
+
+void remove()
+{
+	if (!currentSize)
+		cout << " Записи отсутствуют!" << endl;
+	else
+	{
+		cout << delimiter;
+		cout << "\tУдаление записи(ей)." << endl;
+		a:
+		cout << "   1 - для удаления одной записи;" << endl;
+		cout << "   2 - для удаления всех записей;" << endl;
+		cout << "   3 - выход." << endl;
+		cout << "\tВвод: "; cin >> selection;
+		if (selection == 1)
+		{
+			cout << " Введите номер записи: "; cin >> number;
+			for (i = number - 1; i < currentSize; i++)
+			{
+				A[i] = A[i + 1];
+				A[i].B[i] = A[i + 1].B[i + 1];
+			}
+			currentSize--;
+			cout << " Запись №" << number << " удалена!" << endl;
+		}
+		else if (selection == 2)
+		{
+			for (i = 0; i < currentSize; i++)
+			{
+				A[i] = fail;
+			}
+			currentSize = 0;
+			cout << " Все записи удалены!" << endl;
+		}
+		else if (selection != 3)
+		{
+			cout << " Ошибка ввода, попробуйте снова." << endl;
+			goto a;
+		}
+	}
+	cout << delimiter;
+	cout << endl << "\tЧто дальше? [Ввод]: "; cin >> choice;
+}
+
+void change()
+{
+	if (!currentSize)
+		cout << " Записи не возможно изменить т.к. они отсутсвтуют!" << endl;
+	else
+	{
+		cout << delimiter;
+		cout << "\tИзменение записи." << endl;
+		cout << "   1 - для изменения фамилии;" << endl;
+		cout << "   2 - для изменения имени;" << endl;
+		cout << "   3 - для изменения отчества;" << endl;
+		cout << "   4 - для изменения даты рождения;" << endl;
+		cout << "   5 - для изменения адреса" << endl;
+		cout << "   6 - для изменения пола;" << endl;
+		cout << "   7 - конец изменений." << endl;
+		cout << " Введите номер изменяемой записи: "; cin >> number;
+		if (number <= currentSize)
+		{
+			do
+			{
+				cout << "\tВвод: "; cin >> selection;
+				switch (selection)
+				{
+				case 1: cout << " Новая фамилия: ";
+					cin >> A[number - 1].surname; break;
+				case 2: cout << " Новое имя: ";
+					cin >> A[number - 1].name; break;
+				case 3: cout << " Новое отчество: ";
+					cin >> A[number - 1].patronymic; break;
+				case 4: cout << " Новая дата рождения " << endl;
+					cout << "   День: "; cin >> A[number - 1].B[number - 1].day;
+					cout << "   Месяц: "; cin >> A[number - 1].B[number - 1].month;
+					cout << "   Год: "; cin >> A[number - 1].B[number - 1].year;
+					break;
+				case 5: cin.ignore();
+					cout << " Новый адрес: ";
+					cin.getline(A[number - 1].address, Size); break;
+
+				case 6: cout << " Новый пол: ";
+					cin >> A[number - 1].gender; break;
+				}
+			} while (selection != 7);
+		}
+		else
+		{
+			cout << "\tТакой записи нет!" << endl;
+		}
+	}
+	cout << delimiter;
+	cout << endl << "\tЧто дальше? [Ввод]: "; cin >> choice;
+}
+
+void search()
+{
+	if (!currentSize)
+		cout << " Поиск невозможен, записи отсутсвтуют!" << endl;
+	else {
+		int year;
+		int counter = 0, save;
+		cout << delimiter;
+		cout << "\tПоиск Жителя по году рождения" << endl;
+		cout << " Введите искомый год рождения: "; cin >> year;
+		for (i = 0; i < currentSize; i++)
+		{
+			if (A[i].B[i].year == year)
+			{
+				counter++;
+				save = i;
+			}
+		}
+		if (counter == 1)
+		{
+			cout << " Совпадение найдено!" << endl << endl;
+
+			cout << " Запись о жителе №" << save + 1 << endl;
+
+			cout << " Фамилия: " << A[save].surname << endl;
+
+			cout << " Имя: " << A[save].name << endl;
+
+			cout << " Отчество: " << A[save].patronymic << endl;
+
+			cout << " Дата рождения: ";
+			cout << A[save].B[save].day;
+			cout << '.' << A[save].B[save].month;
+			cout << '.' << A[save].B[save].year << "г." << endl;
+
+			cout << " Адрес проживания: " << A[save].address << endl;
+
+			cout << " Пол: " << A[save].gender << endl;
+
+		}
+		else if (counter > 1)
+		{
+			cout << " Совпадения найдены!" << endl << endl;
+			for (i = 0; i < currentSize; i++)
+			{
+				if (A[i].B[i].year == year)
+				{
+					cout << " Запись о жителе №" << i + 1 << endl;
+
+					cout << " Фамилия: " << A[i].surname << endl;
+
+					cout << " Имя: " << A[i].name << endl;
+
+					cout << " Отчество: " << A[i].patronymic << endl;
+
+					cout << " Дата рождения: ";
+					cout << A[i].B[i].day;
+					cout << '.' << A[i].B[i].month;
+					cout << '.' << A[i].B[i].year << "г." << endl;
+
+					cout << " Адрес проживания: " << A[i].address << endl;
+
+					cout << " Пол: " << A[i].gender << endl;
+					if (i != currentSize - 1)
+						cout << endl;
+				}
+			}
+		}
+		else
+			cout << " Совпадений не найдено!" << endl;
+	}
+	cout << delimiter;
+	cout << endl << "\tЧто дальше? [Ввод]: "; cin >> choice;
+}
+
+int INfile()
+{
+	if (!currentSize)
+		cout << " Записи отсутствуют!" << endl;
+	else
+	{
+		cout << delimiter;
+		cout << "\tЗапись в файл" << endl;
+		a:
+		cout << "   1 - для вывода одной записи;" << endl;
+		cout << "   2 - для вывода всех записей;" << endl;
+		cout << "   3 - выход." << endl;
+		cout << "\tВвод: "; cin >> selection;
+		if (selection == 1 || selection == 2)
+		{
+			char c = '\n';
+			char *filename = new char[15];
+			cout << " Введите имя файла с расширением: "; cin >> filename;
+			FILE *file;
+			errno_t err;
+
+			err = fopen_s(&file, filename, "w");
+			if (err != 0)
+			{
+				perror("Ошибка ");
+				return EXIT_FAILURE;
+			}
+			else
+				cout << " Файл " << filename << " успешно открыт на запись!\n";
+
+			if (selection == 1)
+			{
+				cout << " Введите номер записи: "; cin >> number;
+
+
+				fprintf(file, "Запись о жителе №%d%c", number, c);
+				fprintf(file, "Фамилия: %s%c", A[number - 1].surname, c);
+				fprintf(file, "Имя: %s%c", A[number - 1].name, c);
+				fprintf(file, "Отчество: %s%c", A[number - 1].patronymic, c);
+				fprintf(file, "Дата рождения: ");
+				fprintf(file, "%s", A[number - 1].B[number - 1].day);
+				fprintf(file, ".%s", A[number - 1].B[number - 1].month);
+				fprintf(file, ".%d%c", A[number - 1].B[number - 1].year, c);
+				fprintf(file, "Адрес проживания: %s%c", A[number - 1].address, c);
+				fprintf(file, "Пол: %c%c", A[number - 1].gender, c);
+
+				cout << " Запись №" << number << " записана в файл!" << endl;
+			}
+			else if (selection == 2)
+			{
+				for (i = 0; i < currentSize; i++)
+				{
+					fprintf(file, "Запись о жителе №%d%c", (i + 1), c);
+					fprintf(file, "Фамилия: %s%c", A[i].surname, c);
+					fprintf(file, "Имя: %s%c", A[i].name, c);
+					fprintf(file, "Отчество: %s%c", A[i].patronymic, c);
+					fprintf(file, "Дата рождения: ");
+					fprintf(file, "%s", A[i].B[i].day);
+					fprintf(file, ".%s", A[i].B[i].month);
+					fprintf(file, ".%d%c", A[i].B[i].year, c);
+					fprintf(file, "Адрес проживания: %s%c", A[i].address, c);
+					fprintf(file, "Пол: %c%c%c", A[i].gender, c, c);
+				}
+			}
+			if (fclose(file) == EOF)
+			{
+				printf("Ошибка\n");
+				return -1;
+			}
+			else
+			{
+				cout << "Данные записаны в файл " << filename << '!' << endl;
+				cout << " Файл " << filename << " успешно закрыт!\n";
+			}
+			delete[]filename;
+		}
+		else if (selection != 3)
+		{
+			cout << " Ошибка ввода, попробуйте снова." << endl;
+			goto a;
+		}
+	}
+	cout << delimiter;
+	cout << endl << "\tЧто дальше? [Ввод]: "; cin >> choice;
+	return 0;
+}
+
+int OUTfile()
+{
+	cout << delimiter;
+	cout << "\tЧтение из файла" << endl;
+	a:
+	cout << "   1 - для чтения записей;" << endl;
+	cout << "   2 - выход." << endl;
+	cout << "\tВвод: "; cin >> selection;
+	if (selection == 1)
+	{
+		char c = '\n';
+		const char filename[] = "READ.txt";
+		cout << "Считывание происходит из файла " << filename << endl;
+
+		ifstream file(filename, ios_base::in);
+
+		if (file.is_open())
+			cout << "Файл " << filename << " успешно открыт для чтения!" << endl;
+		else
+			cout << "Ошибка открытия файла " << filename << '!' << endl;
+	
+		while (file.getline(A[currentSize].surname, sizeof(A[currentSize].surname)))
+		{
+			file.getline(A[currentSize].name, sizeof(A[currentSize].name));
+			file.getline(A[currentSize].patronymic, sizeof(A[currentSize].patronymic));
+			file.getline(A[currentSize].B[currentSize].day, sizeof(A[currentSize].B[currentSize].day));
+			file.getline(A[currentSize].B[currentSize].month, sizeof(A[currentSize].B[currentSize].month));
+			file >> A[currentSize].B[currentSize].year;
+			file.ignore();
+			file.getline(A[currentSize].address, sizeof(A[currentSize].address));
+			file.get(A[currentSize].gender);
+			file.seekg(2, ios_base::cur);
+			currentSize++;
+		}
+		cout << "Данные считаны из файла " << filename << '!' << endl;
+		file.close();
+		cout << "Файл " << filename << " успешно закрыт!" << endl;
+	}
+	else if (selection != 2)
+	{
+		cout << " Ошибка ввода, попробуйте снова." << endl;
+		goto a;
+	}
+	cout << delimiter;
+	cout << endl << "\tЧто дальше? [Ввод]: "; cin >> choice;
+	return 0;
+}

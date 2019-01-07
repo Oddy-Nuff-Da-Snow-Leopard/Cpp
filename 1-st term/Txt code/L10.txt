@@ -1,0 +1,150 @@
+7.1 Извлечь 4 бита числа A, начиная с пятого, и добавить их к числу B справа.
+#include <iostream>
+#include <iomanip>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(LC_CTYPE, "Russian");
+	system("color 70");
+	char tmp[33];
+	int A, B, maska = 511, i, c = 0;
+	cout << "Первое число A : ";
+	cin >> A;
+	cout << "Второе число B : ";
+	cin >> B;
+
+	_itoa_s(A, tmp, 2);
+	cout << "Число A в двоичной системе счисления : " << tmp << endl;
+	_itoa_s(B, tmp, 2);
+	cout << "Число B в двоичной системе счисления : " << tmp << endl;
+
+	_itoa_s(maska, tmp, 2);
+	cout << "Маска для  числа А : " << tmp << endl;
+
+	_itoa_s((A & maska) >> 5, tmp, 2);
+	cout << "Извлеченные биты из числа А : " << tmp << endl;
+
+	for (i = 0; tmp[i] != '\0'; i++)
+	{
+		c++;
+	}
+
+	B = B << c; //Сдвиг двоичного представления числа B
+	_itoa_s(B, tmp, 2);
+
+	_itoa_s(B | ((A & maska) >> 5), tmp, 2);
+	cout << "Извлеченные 4 бита числа A, начиная с пятого, и добавленные к числу B справа : " << tmp << endl;
+	_getch();
+}
+===============
+7.2 В числе А установить в единицу n битов влево от позиции p.
+#include <iostream>
+#include <iomanip>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(LC_CTYPE, "Russian");
+	system("color 5f");
+	char tmp[33];
+	int A, n, p, maska;
+	cout << "Введите число в десятичной системе счисления : ";
+	cin >> A;
+	_itoa_s(A, tmp, 2);
+	cout << "Введенное число в двоичной чистеме счисления : " << tmp << endl;
+	cout << "Введите количество битов, в которых необходимо установить единицу : ";
+	cin >> n;
+	cout << "Введите позицию, от которой влево будут устанавливаться биты : ";//?
+	cin >> p;
+	maska = 1 << n;
+	maska = maska - 1;
+	maska = maska << p;
+	A = A | maska;
+	_itoa_s(A, tmp, 2);
+	cout << "Результат : " << tmp;
+	_getch();
+}
+===============
+8.1 Установить в ноль каждый третий бит числа А.
+#include <iostream>
+#include <iomanip>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(LC_CTYPE, "Russian");
+	system("color 5f");
+	char tmp[33];
+	const int N = 100;
+	int A, i, c = 0, maska[N], k = 0;
+	cout << "Введите число в десятичной системе счисления : ";
+	cin >> A;
+	_itoa_s(A, tmp, 2);
+	cout << "Введенное число в двоичной cистеме счисления : " << tmp << endl;
+	for (i = 0; tmp[i] != '\0'; i++)
+	{
+		c++;
+	}
+	cout <<"Количество разрядов в двоичном представлении введенного числа : "<< c << endl;
+	for (i = 0; i <= c - 1; i++)
+	{
+		maska[i] = 0;
+	}
+	for (i = c - 4; i >= 0; i -= 4)
+	{
+		maska[i] = 1;
+	}
+	cout << "Маска для введенного числа : ";
+	for (i = 0; i <= c - 1; i++)
+	{
+		cout << maska[i];
+	}
+	cout << endl;
+	for (i = 0; i < c; i++)
+	{
+		if (maska[i] == 0)
+		{
+			continue;
+		}
+		else
+			k += pow(2, c - 1 - i);
+	}
+	cout <<"Маска числа в десятичной системе счисления : " << k <<endl;
+	A ^= k;
+	_itoa_s(A, tmp, 2);
+	cout << "Число в двоичной системе счисления с установленными в каждый третий бит нулями : " << tmp << endl;
+	_getch();
+}
+===============
+8.2 Извлечь 3 бита числа А влево от позиции n, и вставить их в число В влево от позиции m.
+#include <iostream> 
+#include <conio.h>
+using namespace std;
+int main()
+{
+	setlocale(0, "");
+	system("color 6f");
+	char tmp[33];
+	int A, B, n, m;
+	cout << "Первое число A : ";
+	cin >> A;
+	cout << "Второе число B : ";
+	cin >> B;
+
+	_itoa_s(A, tmp, 2);
+	cout << "Число A в двоичной системе счисления : " << tmp << endl;
+	_itoa_s(B, tmp, 2);
+	cout << "Число B в двоичной системе счисления : " << tmp << endl;
+
+
+	cout << "Укажите позицию,от которой влево извлекуться 3 бита из числа A : ";
+	cin >> n;
+	cout << "Укажите позицию,от которой в число В влево установятся извлеченные биты числа А : ";
+	cin >> m;
+	B ^= 7 << m;
+	B |= ((A & (7 << n)) >> n) << m;
+	_itoa_s(B, tmp, 2);
+	cout << "B=" << tmp << endl;
+	_getch();
+}	

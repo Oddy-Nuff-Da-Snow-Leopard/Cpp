@@ -1,0 +1,370 @@
+#pragma once
+struct treeNode
+{
+	short key;
+	treeNode *left, *right;
+};
+
+void menu(void);
+
+void add(treeNode *&, short);
+void output(treeNode *, short);
+void removeTree(treeNode *);
+void search(treeNode *, short);
+
+treeNode *removeNode(treeNode*, short);
+
+void directDetour(treeNode *);
+void symmetricDetour(treeNode *);
+void reverseDetour(treeNode *);
+
+short height(treeNode *);
+bool isBalanced(treeNode *);
+
+
+=========================
+
+
+#include <iostream>
+#include <algorithm>
+#include "header.h"
+using namespace std;
+
+
+void menu(void)
+{
+	cout << " Введите: " << endl;
+	cout << "  1 - для добавления элементов в дерево;" << endl;
+	cout << "  2 - для вывода дерева;" << endl;
+	cout << "  3 - для удаления элемента по ключу;" << endl;
+	cout << "  4 - для очистки дерева;" << endl;
+	cout << "  5 - для поиска элемента по ключу;" << endl;
+	cout << "  6 - для обхода дерева;" << endl;
+	cout << "  7 - для того, чтобы узнать сбалансированность дерева;" << endl;
+	cout << "  0 - для выхода." << endl;
+}
+
+void add(treeNode *&a, short key)
+{
+	if (a == nullptr)
+	{
+		a = new treeNode;
+		a->key = key;
+		a->left = a->right = nullptr;
+		return;
+	}
+	else
+	{
+		if (key < a->key)
+			add(a->left, key);
+
+		else
+			add(a->right, key);
+	}
+}
+
+
+void output(treeNode *a, short lvl)
+{
+	if (a == nullptr)
+		return;
+
+	lvl++;
+	output(a->right, lvl);
+
+	for (int i = 0; i < lvl; i++)
+		cout << "|";
+	cout << a->key << endl;
+	lvl--;
+
+	lvl++;
+	output(a->left, lvl);
+}
+
+
+void removeTree(treeNode *a)
+{
+	if (a != nullptr)
+	{
+		removeTree(a->left);
+		removeTree(a->right);
+		delete a;
+	}
+}
+
+
+void search(treeNode *a, short key)
+{
+	if (a != nullptr)
+	{
+		if (key < a->key)
+			search(a->left, key);
+
+		else if (key > a->key)
+			search(a->right, key);
+
+		else
+			cout << " Совпадение найдено!" << endl;
+	}
+	else
+		cout << " Cовпадений не найдено!" << endl;
+}
+
+
+treeNode *removeNode(treeNode *tree, short key)
+{
+	treeNode *target, *a;
+	if (tree->key > key)
+		tree->left = removeNode(tree->left, key);
+	else if (tree->key < key)
+		tree->right = removeNode(tree->right, key);
+	else
+	{
+		target = tree;
+		if (tree->left == nullptr)
+			tree = tree->right;
+		else if (tree->right == nullptr)
+			tree = tree->left;
+
+		else
+		{
+			a = tree->left;
+			if (a->right)
+			{
+				while (a->right->right)
+					a = a->right;
+				tree->key = a->right->key;
+				target = a->right;
+				a->right = a->right->left;
+			}
+			else
+			{
+				tree->key = a->key;
+				target = a;
+				tree->left = tree->left->left;
+			}
+		}
+		delete target;
+	}
+	return tree;
+}
+
+
+void directDetour(treeNode *a)
+{
+	if (a == nullptr)
+		return;
+
+	cout << a->key << ' ';
+	directDetour(a->left);
+	directDetour(a->right);
+}
+
+
+void symmetricDetour(treeNode *a)
+{
+	if (a == nullptr)
+		return;
+
+	symmetricDetour(a->left);
+	cout << a->key << ' ';
+	symmetricDetour(a->right);
+}
+
+
+void reverseDetour(treeNode *a)
+{
+	if (a == nullptr)
+		return;
+
+	reverseDetour(a->left);
+	reverseDetour(a->right);
+	cout << a->key << ' ';
+}
+
+
+short height(treeNode* a) 
+{
+	return a == nullptr ? 0 : 1 + max(height(a->left), height(a->right));
+}
+
+
+bool isBalanced(treeNode *a)
+{
+	if (a == nullptr)
+		return 1;
+
+	short lh = height(a->left);
+	short rh = height(a->right);
+
+	if (abs(lh - rh) <= 1 && isBalanced(a->left) && isBalanced(a->right))
+		return 1;
+
+	return 0;
+}
+
+
+=========================
+
+
+/*Добавить к проекту функции смешанного и нисходящего обхода дерева с выводом на консоль и
+функцию проверки сбалансированности дерева*/
+#include <iostream>
+#include "header.h"
+using namespace std;
+
+unsigned short i;
+char delimiter[] = "-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-\n";
+unsigned short n = 1;
+
+int main(void)
+{
+	treeNode *root = nullptr;
+	short choice;
+	short key;
+	short selection;
+	setlocale(0, "");
+	menu();
+	cout << " Ввод > "; cin >> choice;
+
+	while (true)
+	{
+		while (choice < 0 || choice > 7)
+		{
+			cout << " Упс, ошибка ввода, попробуйте снова." << endl;
+			cout << delimiter;
+			cout << " Ввод > "; cin >> choice;
+		}
+		switch (choice)
+		{
+
+		case 0: return 0;
+
+		case 1:
+		{
+			cout << delimiter;
+			cout << "\tДобавление элементов в дерево." << endl;
+			cout << " Для завершения добавления элементов введите ключ равный 0" << endl;
+			cout << " Ключ элемента " << n << ": "; cin >> key;
+			while (key)
+			{
+				add(root, key);
+				cout << " Элемент добавлен!" << endl;
+				cout << " Ключ элемента " << ++n << ": "; cin >> key;
+			}
+			break;
+		}
+
+		case 2:
+			if (root == nullptr)
+				cout << " Вывод невозможен, дерево пусто!" << endl;
+			else
+			{
+				cout << delimiter;
+				cout << "\tВывод дерева." << endl;
+				cout << " Ваше дерево: " << endl;
+				output(root, 0);
+			}
+			break;
+
+		case 3:
+			if (root == nullptr)
+				cout << " Удаление элемента невозможно, дерево пусто!" << endl;
+			else
+			{
+				cout << delimiter;
+				cout << "\tУдаление элемента по ключу." << endl;
+				cout << " Введите ключ элемента, который хотите удалить: "; cin >> key;
+				removeNode(root, key);
+			}
+			break;
+
+		case 4:
+
+			if (root == nullptr)
+				cout << " Очистка дерева не невозможна, дерево пусто!" << endl;
+			else
+			{
+				cout << delimiter;
+				cout << "\tОчиста дерева." << endl;
+				removeTree(root);
+				root = nullptr; n = 1;
+				cout << " Все элементы дерева удалены!" << endl;
+			}
+			break;
+
+		case 5:
+			if (root == nullptr)
+				cout << " Поиск недопустим, т.к. дерево пусто!" << endl;
+			else
+			{
+				cout << delimiter;
+				cout << "\tПоиск элемента по ключю." << endl;
+				cout << " Введите искомый ключ: "; cin >> key;
+				search(root, key);
+			}
+			break;
+
+		case 6:
+			if (root == nullptr)
+				cout << " Обход невозможен, дерево пусто!" << endl;
+			else
+			{
+				cout << delimiter;
+				cout << "\tОбход дерева." << endl;
+				cout << " Выберите способ обхода дерева:" << endl;
+				cout << "  1 - прямой (К-Л-П)" << endl;
+				cout << "  2 - симметричный (Л-К-П)" << endl;
+				cout << "  3 - обратный (Л-П-К)" << endl;
+				cout << " Ваш выбор: "; cin >> selection;
+				if (selection < 1 || selection > 3)
+					cout << " Упс, ошибка ввода!" << endl;
+				else
+				{
+					cout << endl << " Дерево: " << endl; output(root, 0);
+					cout << endl;
+
+					if (selection == 1)
+					{
+						cout << " Прямой обход дерева: " << endl;
+						directDetour(root);
+					}
+
+					if (selection == 2)
+					{
+						cout << " Симметричный обход дерева: " << endl;
+						symmetricDetour(root);
+					}
+
+					else if (selection == 3)
+					{
+						cout << " Обратный обход дерева: " << endl;
+						reverseDetour(root);
+					}
+					cout << endl;
+				}
+			}
+			break;
+
+		case 7:
+			if (root == nullptr)
+				cout << " Проверка невозможна, дерево пусто!" << endl;
+			else
+			{
+				cout << delimiter;
+				cout << "\tПроверка дерева на сбалансированность." << endl;
+
+				if (isBalanced(root))
+					cout << " Дерево сбалансированно";
+				else
+					cout << " Дерево не сбалансированно";
+				cout << endl;
+			}
+			break;
+		}
+
+		cout << delimiter;
+		cout << endl << "\tЧто дальше? Ввод > "; cin >> choice;
+		cout << endl;
+	}
+}

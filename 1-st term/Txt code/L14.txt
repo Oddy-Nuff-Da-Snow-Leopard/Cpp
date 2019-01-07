@@ -1,0 +1,136 @@
+7.1 Задан массив A из n элементов. Найти количество элементов этого массива, больших среднего арифметического всех его элементов.
+#include <iostream>
+#include <iomanip>
+#include <ctime>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(0, "");
+	system("color f0");
+	int i, n, r = 0;
+	float sum = 0, avg;
+	int *ptrA;
+	cout << "Введите количество элементов в массиве : ";
+	cin >> n;
+	ptrA = new int[n];
+	srand((unsigned)time(NULL));
+	for (i = 0; i < n; i++)
+		ptrA[i] = rand() % 4 + 5;
+	cout << "Ваш массив : ";
+	for (i = 0; i < n; i++)
+	{
+		cout << ptrA[i] << ' ';
+		sum += ptrA[i];
+	}
+	cout << endl;
+	cout << "Сумма элементов в массиве : " << sum << endl;
+	avg = sum / (float)n;
+	cout << "Среднее арифметическое элементов в массиве : " << setprecision(3) << avg << endl;
+	for (i = 0; i < n; i++)
+		if (ptrA[i] > avg)
+			r++;
+	cout << "Количество элементов этого массива, больших среднего арифметического всех его элементов : " << r << endl;
+	cout << "Их номера : ";
+	for (i = 0; i < n; i++)
+		if (ptrA[i] > avg)
+			cout << i << ' ';
+	delete[] ptrA;
+	_getch();
+}
+===============
+7.2 Дана целочисленная прямоугольная матрица. Определить количество строк, не содержащих ни одного нулевого элемента и максимальное из чисел, встречающихся в заданной матрице более одного раза.
+#include <iostream>
+#include <iomanip>
+#include <ctime>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(0, "");
+	system("color f0");
+	srand((unsigned)time(NULL));
+	int i, j, n, m, c = 0, max, l = 0;
+	bool flag = false;
+	int **matrix;
+	cout << "Введите количество строк : ";
+	cin >> n;
+	cout << "Введите количество столбцов : ";
+	cin >> m;
+	matrix = new int *[n];
+	for (i = 0; i < n; i++)
+		matrix[i] = new int[m];
+
+	cout << "Ваша матрица размером " << n << " на " << m << " : " << endl << endl;
+	for (i = 0; i < n; i++)
+		for (j = 0; j < m; j++)
+			matrix[i][j] = -9 + rand() % 19;
+
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < m; j++)
+		{
+			cout << setw(4) << matrix[i][j];
+		}
+		cout << endl << endl;
+	}
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < m; j++)
+		{
+			if (matrix[i][j] != 0)
+				flag = true;
+			else
+			{
+				flag = false;
+				break;
+			}
+		}
+		if (flag == true)
+			c++;
+		flag = false;
+	}
+	cout << "Количество строк, не содержащих ни одного нулевого элемента : " << c << endl;
+	cout << "Номера этих строк : ";
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < m; j++)
+		{
+			if (matrix[i][j] != 0)
+				flag = true;
+			else
+			{
+				flag = false;
+				break;
+			}
+		}
+		if (flag == true)
+			cout << i << " ";
+	}
+	cout << endl;
+
+	max = matrix[0][0];
+	for (i = 0; i < n; i++)
+		for (j = 0; j < m; j++)
+			if (matrix[i][j] > max)
+				max = matrix[i][j];
+	i = 0;
+	j = 0;
+	do
+	{
+		for (i = 0; i < n; i++)
+			for (j = 0; j < m; j++)
+				if (matrix[i][j] == max)
+					l++;
+		if (l > 1)
+			break;
+		else
+			max--;
+		l = 0;
+	} while (i++, j++);
+	cout << "Максимальное из чисел, встречающихся в заданной матрице более одного раза : " << max << endl;
+	for (i = 0; i < n; i++)
+		delete matrix[i];
+	delete[]matrix;
+	_getch();
+}

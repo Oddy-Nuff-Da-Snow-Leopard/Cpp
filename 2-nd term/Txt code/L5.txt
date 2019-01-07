@@ -1,0 +1,621 @@
+/*Реализовать функции ввода с клавиатуры, вывода на экран, удаления, поиска элементов. Интерфейс пользователя осуществить в виде меню.
+Отдел кадров. Ф.И.О. работника, образование, отдел, должность, оклад, дата поступления на предприятие.
+Выбор по стражу работы.
+Даты реализовать с помощью битового поля, отдел  с помощью перечисления.*/
+
+#include <iostream>
+
+using namespace std;
+
+#define N 20
+#define M 30
+#define quantity 20
+
+int i;
+char delimiter[] = "====================================\n";
+
+void input();
+void output();
+void remove();
+void search();
+
+enum divisions {
+	consultants = 1,
+	engineers,
+	analysts,
+	designers,
+	programmers,
+	managers
+};
+
+struct dayMonthYear
+{
+	unsigned short day : 5, month : 4, year : 11;
+};
+
+struct humanResources {
+	char surname[N];
+	char name[N];
+	char patronymic[N];
+	char education[M];
+	unsigned short divisions;
+	char post[M];
+	unsigned short salary;
+	struct dayMonthYear employment;
+}S[quantity];
+humanResources *pS;
+humanResources fail;
+
+unsigned short a;
+
+unsigned short choice;
+unsigned short currentQuantity = 0;
+unsigned short selection, number;
+
+const char *department;
+const char *departmentName(int n)
+{
+	switch (n)
+	{
+	case 1:  department = "Консультанты"; break;
+	case 2:  department = "Инженеры"; break;
+	case 3:  department = "Аналитики"; break;
+	case 4:  department = "Дизайнеры"; break;
+	case 5:  department = "Программисты"; break;
+	case 6:  department = "Менеджеры"; break;
+	}
+	return department;
+}
+
+int main(void)
+{
+	system("color f0");
+	setlocale(0, "");
+	system("chcp 1251");
+	cout << endl;
+	cout << "Введите: " << endl;
+	cout << "\t1 - для ввода новой записи;" << endl;
+	cout << "\t2 - для вывода записи(ей);" << endl;
+	cout << "\t3 - для удаления записи;" << endl;
+	cout << "\t4 - для поиска сотрудника по стажу работы;" << endl;
+	cout << "\t5 - для выхода." << endl;
+a:
+	cout << "\t[Ввод]: "; cin >> choice;
+
+	do
+	{
+		if (choice < 1 || choice > 5)
+		{
+			cout << "Ошибка ввода, попробуйте снова." << endl;
+			goto a;
+		}
+		else
+			cout << endl;
+
+		switch (choice)
+		{
+		case 1: input(); break;
+		case 2: output(); break;
+		case 3: remove(); break;
+		case 4: search(); break;
+		}
+	} while (choice != 5);
+
+	return 0;
+}
+
+void input()
+{
+	cout << delimiter;
+	cout << "\tНовая запись." << endl;
+	cout << "     Запись о сотруднике №" << currentQuantity + 1 << endl;
+	if (currentQuantity < quantity)
+	{
+		pS = &S[currentQuantity];
+
+		cout << " Фамилия: "; cin >> pS->surname;
+
+		cout << " Имя: "; cin >> pS->name;
+
+		cout << " Отчество: "; cin >> pS->patronymic;
+		cin.ignore();
+
+		cout << " Образование: "; cin.getline(pS->education, M);
+
+		cout << " Отдел: "; cin >> pS->divisions;
+		cin.ignore();
+
+		cout << " Должность: "; cin.getline(pS->post, M);
+
+		cout << " Оклад($): "; cin >> pS->salary;
+
+		cout << " Дата приёма на работу: " << endl;
+		cout << "   День: "; cin >> a;
+		pS->employment.day = a;
+		cout << "   Месяц: "; cin >> a;
+		pS->employment.month = a;
+		cout << "   Год: "; cin >> a;
+		pS->employment.year = a;
+
+		currentQuantity++;
+	}
+	else
+		cout << " Введено максимальное количество записей.";
+
+	cout << delimiter;
+	cout << endl << "\tЧто дальше? [Ввод]: "; cin >> choice;
+}
+
+void output()
+{
+	if (!currentQuantity)
+		cout << " Записи отсутствуют!" << endl;
+	else
+	{
+		cout << delimiter;
+		cout << "\tВывод записи(ей)." << endl;
+	a:
+		cout << "   1 - для вывода одной записи;" << endl;
+		cout << "   2 - для вывода всех записей;" << endl;
+		cout << "   3 - выход." << endl;
+		cout << "\tВвод: "; cin >> selection;
+		if (selection == 1)
+		{
+			cout << " Введите номер записи: "; cin >> number;
+			if (number <= currentQuantity && number > 0)
+			{
+				pS = &S[number - 1];
+				cout << " Запись о сотруднике №" << number << endl;
+
+				cout << " Фамилия: " << pS->surname << endl;
+
+				cout << " Имя: " << pS->name << endl;
+
+				cout << " Отчество: " << pS->patronymic << endl;
+
+				cout << " Образование: " << pS->education << endl;
+
+				cout << " Отдел: " << departmentName(pS->divisions) << endl;
+
+				cout << " Должность: " << pS->post << endl;
+
+				cout << " Оклад: " << pS->salary << "$" << endl;
+
+				cout << " Дата приёма на работу: ";
+				if (pS->employment.day / 10 < 1)
+					cout << '0';
+				cout << pS->employment.day << '.';
+				if (pS->employment.month / 10 < 1)
+					cout << '0';
+				cout << pS->employment.month << '.';
+				cout << pS->employment.year << "г." << endl;
+			}
+			else
+				cout << " Такой записи нет!" << endl;
+		}
+
+		else if (selection == 2)
+		{
+			for (i = 0; i < currentQuantity; i++)
+			{
+				pS = &S[i];
+
+				cout << " Запись о сотруднике №" << i + 1 << endl;
+
+				cout << " Фамилия: " << pS->surname << endl;
+
+				cout << " Имя: " << pS->name << endl;
+
+				cout << " Отчество: " << pS->patronymic << endl;
+
+				cout << " Образование: " << pS->education << endl;
+
+				cout << " Отдел: " << departmentName(pS->divisions) << endl;
+
+				cout << " Должность: " << pS->post << endl;
+
+				cout << " Оклад: " << pS->salary << "$" << endl;
+
+				cout << " Дата приёма на работу: ";
+				if (pS->employment.day / 10 < 1)
+					cout << '0';
+				cout << pS->employment.day << '.';
+				if (pS->employment.month / 10 < 1)
+					cout << '0';
+				cout << pS->employment.month << '.';
+				cout << pS->employment.year << "г." << endl;
+
+				if (i != currentQuantity - 1)
+					cout << endl;
+			}
+		}
+		else if (selection != 3)
+		{
+			cout << " Ошибка ввода, попробуйте снова." << endl;
+			goto a;
+		}
+	}
+	cout << delimiter;
+	cout << endl << "\tЧто дальше? [Ввод]: "; cin >> choice;
+}
+
+void remove()
+{
+	if (!currentQuantity)
+		cout << " Записи отсутствуют!" << endl;
+	else
+	{
+		cout << delimiter;
+		cout << "\tУдаление записи(ей)." << endl;
+	a:
+		cout << "   1 - для удаления одной записи;" << endl;
+		cout << "   2 - для удаления всех записей;" << endl;
+		cout << "   3 - выход." << endl;
+		cout << "\tВвод: "; cin >> selection;
+		if (selection == 1)
+		{
+			cout << " Введите номер записи: "; cin >> number;
+			if (number <= currentQuantity && number > 0)
+			{
+				for (i = number - 1; i < currentQuantity; i++)
+				{
+					*(S + i) = *(S + i + 1);
+				}
+				currentQuantity--;
+				cout << " Запись №" << number << " удалена!" << endl;
+			}
+			else
+				cout << " Такой записи нет!" << endl;
+		}
+		else if (selection == 2)
+		{
+			for (i = 0; i < currentQuantity; i++)
+			{
+				S[i] = fail;
+			}
+			currentQuantity = 0;
+			cout << " Все записи удалены!" << endl;
+		}
+		else if (selection != 3)
+		{
+			cout << " Ошибка ввода, попробуйте снова." << endl;
+			goto a;
+		}
+	}
+	cout << delimiter;
+	cout << endl << "\tЧто дальше? [Ввод]: "; cin >> choice;
+}
+
+void search()
+{
+	if (!currentQuantity)
+		cout << " Поиск невозможен, записи отсутсвтуют!" << endl;
+	else
+	{
+		int experience;
+		int counter = 0, save;
+
+		cout << delimiter;
+		cout << "\tПоиска сотрудника по стажу работы." << endl;
+		cout << " Искомый стаж работы: "; cin >> experience;
+
+		for (i = 0; i < currentQuantity; i++)
+		{
+			if (2018 - S[i].employment.year == experience)
+			{
+				counter++;
+				save = i;
+			}
+		}
+		if (counter == 1)
+		{
+			cout << " Совпадение найдено!" << endl << endl;
+			pS = &S[save];
+			cout << " Запись о жителе №" << save + 1 << endl;
+
+			cout << " Фамилия: " << pS->surname << endl;
+
+			cout << " Имя: " << pS->name << endl;
+
+			cout << " Отчество: " << pS->patronymic << endl;
+
+			cout << " Образование: " << pS->education << endl;
+
+			cout << " Отдел: " << departmentName(pS->divisions) << endl;
+
+			cout << " Должность: " << pS->post << endl;
+
+			cout << " Оклад: " << pS->salary << "$" << endl;
+
+			cout << " Дата приёма на работу: ";
+			if (pS->employment.day / 10 < 1)
+				cout << '0';
+			cout << pS->employment.day << '.';
+			if (pS->employment.month / 10 < 1)
+				cout << '0';
+			cout << pS->employment.month << '.';
+			cout << pS->employment.year << "г." << endl;
+
+		}
+		else if (counter > 1)
+		{
+			cout << " Совпадения найдены!" << endl << endl;
+			for (i = 0; i < currentQuantity; i++)
+			{
+				if (2018 - S[i].employment.year == experience)
+				{
+					pS = &S[i];
+
+					cout << " Запись о сотруднике №" << i + 1 << endl;
+
+					cout << " Фамилия: " << pS->surname << endl;
+
+					cout << " Имя: " << pS->name << endl;
+
+					cout << " Отчество: " << pS->patronymic << endl;
+
+					cout << " Образование: " << pS->education << endl;
+
+					cout << " Отдел: " << departmentName(pS->divisions) << endl;
+
+					cout << " Должность: " << pS->post << endl;
+
+					cout << " Оклад: " << pS->salary << "$" << endl;
+
+					cout << " Дата приёма на работу: ";
+					if (pS->employment.day / 10 < 1)
+						cout << '0';
+					cout << pS->employment.day << '.';
+					if (pS->employment.month / 10 < 1)
+						cout << '0';
+					cout << pS->employment.month << '.';
+					cout << pS->employment.year << "г." << endl;
+
+					if (i != currentQuantity - 1)
+						cout << endl;
+				}
+			}
+		}
+		else
+			cout << " Совпадений не найдено!" << endl;
+	}
+	cout << delimiter;
+	cout << endl << "\tЧто дальше? [Ввод]: "; cin >> choice;
+}
+===============
+/*В соответствии со своим вариантом разработать программу с использованием структуры в виде объединения.
+Реализовать функции ввода с клавиатуры, вывода на экран и поиска.
+Преподаватели. Фамилия преподавателя, название экзамена, дата экзамена.
+Выбор по фамилии.*/
+
+#include <iostream>
+
+using namespace std;
+
+#define N 20
+#define M 30
+#define quantity 20
+
+int i;
+char delimiter[] = "====================================\n";
+
+void input();
+void output();
+void search();
+
+struct dayMonthYear
+{
+	unsigned short day : 5;
+	unsigned short month : 4;
+	unsigned short year : 11;
+};
+
+struct teachers {
+	char surname[N];
+	char titleOfTheExam[N];
+	struct dayMonthYear examDate;
+}T[quantity];
+teachers *pT;
+
+union help {
+	int choice;
+	unsigned short selection, number;
+}B;
+
+unsigned short currentQuantity = 0;
+unsigned short a;
+
+int main(void)
+{
+	system("color f0");
+	setlocale(0, "");
+	system("chcp 1251");
+	cout << endl;
+	cout << "Введите: " << endl;
+	cout << "\t1 - для ввода новой записи;" << endl;
+	cout << "\t2 - для вывода записи(ей);" << endl;
+	cout << "\t3 - для поиска преподавателя по фамилии;" << endl;
+	cout << "\t4 - для выхода." << endl;
+a:
+	cout << "\t[Ввод]: "; cin >> B.choice;
+
+	do
+	{
+		if (B.choice < 1 || B.choice > 4)
+		{
+			cout << "Ошибка ввода, попробуйте снова." << endl;
+			goto a;
+		}
+		else
+			cout << endl;
+
+		switch (B.choice)
+		{
+		case 1:input(); break;
+		case 2: output(); break;
+		case 3: search(); break;
+		}
+	} while (B.choice != 4);
+
+	return 0;
+}
+
+void input()
+{
+	cout << delimiter;
+	cout << "\tНовая запись." << endl;
+	cout << "     Запись о преподавателе №" << currentQuantity + 1 << endl;
+
+	if (currentQuantity < quantity)
+	{
+		pT = &T[currentQuantity];
+
+		cout << " Фамилия: "; cin >> pT->surname;
+
+		cin.ignore();
+		cout << " Название экзамена: "; cin.getline(pT->titleOfTheExam, N);
+
+		cout << " Дата экзамена: " << endl;
+		cout << "   День: "; cin >> a;
+		pT->examDate.day = a;
+		cout << "   Месяц: "; cin >> a;
+		pT->examDate.month = a;
+		cout << "   Год: "; cin >> a;
+		pT->examDate.year = a;
+
+		currentQuantity++;
+	}
+	else
+		cout << " Введено максимальное количество записей.";
+
+	cout << delimiter;
+	cout << endl << "\tЧто дальше? [Ввод]: "; cin >> B.choice;
+}
+
+void output()
+{
+	if (!currentQuantity)
+		cout << " Записи отсутствуют!" << endl;
+	else
+	{
+		cout << delimiter;
+		cout << "\tВывод записи(ей)." << endl;
+	a:
+		cout << "   1 - для вывода одной записи;" << endl;
+		cout << "   2 - для вывода всех записей;" << endl;
+		cout << "   3 - выход." << endl;
+		cout << "\tВвод: "; cin >> B.selection;
+		if (B.selection == 1)
+		{
+			cout << " Введите номер записи: "; cin >> B.number;
+			if (B.number <= currentQuantity && B.number > 0)
+			{
+				pT = &T[B.number - 1];
+				cout << " Запись о преподавателе №" << B.number << endl;
+
+				cout << " Фамилия: " << pT->surname << endl;
+
+				cout << " Название экзамена: " << pT->titleOfTheExam << endl;
+
+				cout << " Дата экзамена: ";
+				if (pT->examDate.day / 10 < 1)
+					cout << '0';
+				cout << pT->examDate.day << '.';
+				if (pT->examDate.month / 10 < 1)
+					cout << '0';
+				cout << pT->examDate.month << '.';
+				cout << pT->examDate.year << "г." << endl;
+			}
+			else
+				cout << " Такой записи нет!" << endl;
+		}
+
+		else if (B.selection == 2)
+		{
+			for (i = 0; i < currentQuantity; i++)
+			{
+				pT = &T[i];
+
+				cout << " Запись о преподавателе №" << i + 1 << endl;
+
+				cout << " Фамилия: " << pT->surname << endl;
+
+				cout << " Название экзамена: " << pT->titleOfTheExam << endl;
+
+				cout << " Дата экзамена: ";
+				if (pT->examDate.day / 10 < 1)
+					cout << '0';
+				cout << pT->examDate.day << '.';
+				if (pT->examDate.month / 10 < 1)
+					cout << '0';
+				cout << pT->examDate.month << '.';
+				cout << pT->examDate.year << "г." << endl;
+
+				if (i != currentQuantity - 1)
+					cout << endl;
+			}
+		}
+		else if (B.selection != 3)
+		{
+			cout << " Ошибка ввода, попробуйте снова." << endl;
+			goto a;
+		}
+	}
+	cout << delimiter;
+	cout << endl << "\tЧто дальше? [Ввод]: "; cin >> B.choice;
+}
+
+void search()
+{
+	if (!currentQuantity)
+		cout << " Поиск невозможен, записи отсутсвтуют!" << endl;
+	else
+	{
+		char *surname = new char[M];
+		int counter = 0, save;
+
+		cout << delimiter;
+		cout << "\tПоиск преподавателя по фамилии." << endl;
+		cout << " Искомая фамилия: "; cin >> surname;
+
+		for (i = 0; i < currentQuantity; i++)
+		{
+			for (int k = 0; T[i].surname[k] != '\0'; k++)
+			{
+				if (T[i].surname[k] == surname[k])
+				{
+					counter++;
+				}
+			}
+			save = i;
+		}
+		if (counter == strlen(T[save].surname))
+		{
+			cout << " Совпадение найдено!" << endl << endl;
+			pT = &T[save];
+
+			cout << " Запись о преподавателе №" << save + i << endl;
+
+			cout << " Фамилия: " << pT->surname << endl;
+
+			cout << " Название экзамена: " << pT->titleOfTheExam << endl;
+
+			cout << " Дата экзамена: ";
+			if (pT->examDate.day / 10 < 1)
+				cout << '0';
+			cout << pT->examDate.day << '.';
+			if (pT->examDate.month / 10 < 1)
+				cout << '0';
+			cout << pT->examDate.month << '.';
+			cout << pT->examDate.year << "г." << endl;
+
+			if (save != currentQuantity - 1)
+				cout << endl;
+		}
+		else
+			cout << " Совпадений не найдено!" << endl;
+		delete[]surname;
+	}
+	cout << delimiter;
+	cout << endl << "\tЧто дальше? [Ввод]: "; cin >> B.choice;
+}

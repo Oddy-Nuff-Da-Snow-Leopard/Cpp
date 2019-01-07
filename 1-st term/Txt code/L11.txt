@@ -1,0 +1,197 @@
+7. Задан одномерный числовой массив A из n элементов и число k. Найти номера всех элементов массива, которые равны, больше и меньше k.
+#include <iostream>
+#include <ctime>
+#include <conio.h>
+void main()
+{
+	setlocale(LC_CTYPE, "Russian");
+	system("color f0");
+	using namespace std;
+	const int N = 100;
+	int  A[N], i, k, size, flag=0, *ptr;
+	srand((unsigned)time(NULL));
+	cout << "Введите количесво элементов в массиве : ";
+	cin >> size;
+	ptr = &size;
+	for (i = 0; i < *ptr; i++)
+	{
+		*(A + i) = rand() % 40;
+	}
+	for (i = 0; i < *ptr; i++)
+	{
+		cout << *(A + i) << ' ';
+	}
+	cout << endl;
+	cout << "Введите нужное число : ";
+	cin >> k;
+
+
+	for (i = 0; i < *ptr; i++)
+		if (*(A + i) == k)
+			flag = 1;
+
+	if (flag == 1)
+	{
+		cout << "Номера всех элементов массива, которые равны k : ";
+		for (i = 0; i < *ptr; i++)
+			if (*(A + i) == k)
+				cout << i << " ";
+	}
+	else
+		cout << "В массиве отсутствуют элементы равные k";
+	flag = 0;
+	cout << endl;
+
+
+	for (i = 0; i < *ptr; i++)
+		if (*(A + i) > k)
+			flag = 1;
+
+	if (flag == 1)
+	{
+		cout << "Номера всех элементов массива, которые больше k : ";
+		for (i = 0; i < *ptr; i++)
+			if (*(A + i) > k)
+				cout << i << " ";
+	}
+	else
+		cout << "В массиве отсутствуют элементы большие k";
+	flag = 0;
+	cout << endl;
+	
+
+	for (i = 0; i < *ptr; i++)
+		if (*(A + i) < k)
+			flag = 1;
+
+	if (flag == 1)
+	{
+		cout << "Номера всех элементов массива, которые меньше k :";
+		for (i = 0; i < *ptr; i++)
+			if (*(A + i) < k)
+				cout << i << " ";
+	}
+	else
+		cout << "В массиве отсутствуют элементы меньшие k" << endl;
+	_getch();
+}
+===============
+8. Дан массив x, содержащий k элементов, и y, содержащий n элементов. Найти их «пересечение»  т.е. массив z, содержащий их общие элементы, причем кратность каждого элемента в массиве z равняется минимуму из его кратностей в массивах x и y.
+#include <iostream>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(0, "");
+	system("color f0");
+	const int K = 100, N = 100;
+	int a, i, X[K], Y[N], Z[N], k, n, j, t = 0, c = 0, r = 0;
+	bool flag;
+	int *ptrk, *ptrn, *ptra, *ptrj;
+	ptra = &a;
+	ptrj = &j;
+	cout << "Введите количество элементов в массиве X : ";
+	ptrk = &k;
+	cin >> *ptrk;
+	cout << "Введите массив X : " << endl;
+	cin >> *ptra;
+	for (i = 0, j = 0; i < *ptrk; i++)
+	{
+		*(X+i) = *ptra;
+		j++;
+		if (*ptrj == *ptrk)
+		{
+			break;
+		}
+		else
+			cin >> *ptra;
+	}
+	cout << "Массив X : ";
+	for (i = 0; i < *ptrk; i++)
+	{
+		cout << *(X + i) << ' ';
+	}
+	cout << endl << endl;
+	cout << "Введите количество элементов в массиве Y : ";
+	ptrn = &n;
+	cin >> *ptrn;
+	cout << "Введите массив Y : " << endl;
+	cin >> *ptra;
+	for (i = 0, *ptrj = 0; i < *ptrn; i++)
+	{
+		*(Y+i) = *ptra;
+		j++;
+		if (*ptrj == *ptrn)
+		{
+			break;
+		}
+		else
+			cin >> *ptra;
+	}
+	cout << "Массив Y : ";
+	for (i = 0; i < *ptrn; i++)
+	{
+		cout << *(Y + i) << ' ';
+	}
+	cout << endl << endl;
+
+
+	cout << "Массив X : ";
+	for (i = 0; i < *ptrk; i++)
+	{
+		cout << *(X + i) << ' ';
+	}
+	cout << endl;
+	cout << "Массив Y : ";
+	for (i = 0; i < *ptrn; i++)
+	{
+		cout << *(Y + i) << ' ';
+	}
+	cout << endl;
+
+	if (*ptrk >= *ptrn)
+	{
+		*ptrj = *ptrn;
+	}
+	else
+		*ptrj = *ptrk;
+
+	for (i = 0; i < *ptrj; i++)
+	{
+		if (*(X + i) == *(Y + i))
+		{
+			Z[i - c] = *(X + i);
+			flag = true;
+		}
+		else
+		{
+			c++;
+		}
+	}
+	if (flag == true)
+	{
+		for (i = 0; i < *ptrj - c; i++)
+		{
+			if (*(Z + i) == *(Z + 1))
+			{
+				t = i;
+				r++;
+				for (t; t < *ptrj - t + 1; t++)
+				{
+					*(Z + t) = *(Z + t + 1);
+				}
+			}
+			i++;
+		}
+		cout << "Пересечение массивов X и Y, т.е. массив Z : ";
+		for (i = 0; i < *ptrj - c-r; i++)
+		{
+			cout << *(Z + i) << ' ';
+		}
+	}
+	else
+	{
+		cout << "Пересечения массивов X и Y не существует" << endl;
+	}
+	_getch();
+ }

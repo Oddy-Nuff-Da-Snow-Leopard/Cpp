@@ -1,0 +1,72 @@
+7. Преобразовать строку: после каждой буквы a добавить символ !
+#include <conio.h>
+#include <iostream>
+using namespace std;
+void main()
+{
+	setlocale(0, "");
+	system("color f0");
+	int i = 0, j, m = 0, l = 0, r = 0;
+	const int N = 100;
+	char s1[N], s2[N], *ptrs1;
+	cout << "Введите строку : " << endl;
+	cin.getline(s1, N);
+	ptrs1 = s1;
+	while (*ptrs1++)
+	{
+		if (s1[i] == 'a')
+		{
+			*(ptrs2 + i + l) = *(s1 + i);
+			l++;
+			*(ptrs2 + l + i) = '!';
+
+		}
+		else
+			*(s2 + i + l)= *(s1+i);
+		i++;
+		r++;
+	}
+	s2[r + l] = '\0';
+	cout << "Преобразованная строка,после каждой буквы 'a' которой добавлен символ ! :" << endl;
+	for (i = 0; *(s2+i) != '\0'; i++)
+		cout << s2[i];
+	_getch();
+}
+===============
+10. Написать программу, которая записывает строку в обратном порядке.
+#include <conio.h>
+#include <iostream>
+using namespace std;
+void main()
+{
+	setlocale(0, "");
+	system("color f0");
+	int i=0, m = 0, l = 0;
+	int *ptrm, *ptrl;
+	const int N = 100;
+	char s1[N], s2[N];
+	char *ptr1, *ptrs2 = s2;
+	cout << "Введите строку : " << endl;
+	cin.getline(s1, N);
+	ptr1 = &s1[0];
+	while (*ptr1++)
+	{
+		m++;
+	}
+	ptrm = &m;
+	*ptrm -= 1;
+	for (i, *ptrm; i < *(ptrm + 1), *ptrm >= 0; i++, m--)
+	{
+		*(s2 + i) = *(s1 + *ptrm);
+		l++;
+	}
+	ptrl = &l;
+	i = 0;
+	cout << "Перевернутая строка : " << endl;
+	do
+	{
+		cout << *(s2 + i);
+		i++;
+	} while (i < *ptrl);
+	_getch();
+}

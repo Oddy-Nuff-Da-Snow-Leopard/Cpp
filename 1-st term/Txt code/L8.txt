@@ -1,0 +1,102 @@
+#include <iostream>
+#include <iomanip>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(0, """");
+	double a, b, y, h, n, x, s = 0;
+	cout << "¬ведите отрезок [a;b],на котором будет вычисл€тьс€ площадь фигуры под графиком f(x)=e^x + 2 : " << endl;
+	cin >> a;
+	cin >> b;
+	cout << "¬ведите на сколько равных частей будет делитьс€ отрезок : ";
+	cin >> n;
+	h = (b - a) / n;
+	x = a;
+	do
+	{
+		s += ((h / 2)*(exp(x) + exp(x + h) + 4));
+		x += h;
+		cout << "h = " << h << "  x = " << x << endl;
+	} while (x < b - h);
+	cout << "ѕлощадь фигуры под графиком f(x)=e^x + 2 на отрезке от [" << a << ';' << b << "] равна : " << s << endl;
+	_getch();
+}
+===============
+#include <iostream>
+#include <iomanip>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(0, """");
+	double a, b = 11, y, h, n, x, s1 = 0, s2 = 0, s, i = 1;
+	cout << "¬ведите отрезок [a;b],на котором будет вычесл€тьс€ площадь фигуры под графиком f(x)=e^x + 2 : " << endl;
+	cin >> a;
+	cin >> b;
+	cout << "¬ведите на сколько равных частей будет делитьс€ отрезок : ";
+	cin >> n;
+	h = (b - a) / (2 * n);
+	x = a + 2 * h;
+	do
+	{
+		s2 += (exp(x) + 2);
+		x += h;
+		s1 += +(exp(x) + 2);
+		x += h;
+		i += 1;
+	} while (i < n);
+	cout << "s1 = " << s1 << endl;
+	s = (h / 3)*((exp(a) + 2) + 4 * (exp(a + h) + 2) + 4 * s1 + 2 * s2 + (exp(b) + 2));
+	cout << "ѕлощадь фигуры под графиком f(x)=e^x + 2 на отрезке от [" << a << ';' << b << "] равна : " << s << endl;
+	_getch();
+}
+===============
+#include <iostream>
+#include <iomanip>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(0, """");
+	double a, x, x1, b, e = 0.0001;
+	cout << "¬ведите отрезок [a;b],на котором находитс€ корень : " << endl;
+	cin >> a;
+	cin >> b;
+	if ((pow(a, 3) + 3 * a - 1)*(a * 6) > 0)
+	{
+		x1 = a;
+	}
+	else
+		x1 = b;
+	do
+	{
+		x = x1;
+		x1 = x - ((pow(a, 3) + 3 * a - 1) / (3 * pow(x, 2) + 3));
+	} while (abs(x1 - x) < e);
+	cout << "x1 = " << x1 << endl;
+	_getch();
+}
+===============
+#include <iostream>
+#include <iomanip>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(0, """");
+	double a, x, x1, b, e = 0.0001;
+	cout << "¬ведите отрезок [a;b],на котором находитс€ корень : " << endl;
+	cin >> a;
+	cin >> b;
+	do
+	{
+		x = (a + b) / 2;
+		if ((pow(x, 3) + 3 * x - 1)*(pow(a, 3) + 3 * a - 1) <= 0)
+			b = x;
+		else
+			a = x;
+	} while (abs(a - b) > 2 * e);
+	cout << "x = " << x << endl;
+	_getch();
+}

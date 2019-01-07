@@ -1,0 +1,129 @@
+7.Дана матрица A(N, M). Поменять местами её наибольший и наименьший элементы.
+#include <iostream>
+#include <iomanip>
+#include <ctime>
+#include <conio.h>
+using namespace std;
+void main()
+{
+	setlocale(0, "");
+	system("color f0");
+	int i, j, m, n, min, max;
+	int *ptrn, *ptrm;
+	const int N = 100, M = 100;
+	int matrix[N][M];
+	srand((unsigned)time(NULL));
+	cout << "Введите количество строк : ";
+	cin >> n;
+	ptrn = &n;
+	cout << "Введите количество столбцов : ";
+	cin >> m;
+	ptrm = &m;
+	cout << endl;
+	cout << "Ваша матрица размером " << *ptrn << " на " << *ptrm << " : " << endl << endl;
+	for (i = 0; i < *ptrn; i++)
+		for (j = 0; j < *ptrm; j++)
+			*(matrix[i] + j) = rand() % 10 + 3;
+	for (i = 0; i < *ptrn; i++)
+	{
+		for (j = 0; j < *ptrm; j++)
+		{
+			cout << setw(4) << *(*(matrix + i) + j);
+		}
+		cout << endl << endl;
+	}
+	cout << endl;
+
+	min = matrix[0][0];
+	for (i = 0; i < *ptrn; i++)
+		for (j = 0; j < *ptrm; j++)
+			if (*(matrix[i] + j) <= min)
+				min = *(*(matrix + i) + j);
+	cout << "Минимальное значение в матрице : " << min << endl;
+
+	max = matrix[0][0];
+	for (i = 0; i < *ptrn; i++)
+		for (j = 0; j < *ptrm; j++)
+			if ((*(matrix + i))[j] >= max)
+				max = *(matrix[i] + j);
+	cout << "Максимальное значение в матрице : " << max << endl;
+
+	for (i = 0; i < *ptrn; i++)
+		for (j = 0; j < *ptrm; j++)
+			if ((*(matrix + i))[j] == min)
+				*(matrix[i] + j) = max;
+			else if (*(*(matrix + i) + j) == max)
+			*(matrix[i] + j) = min;
+
+	cout << "Переставленные максимальные и минимальные элементы матрицы : " << endl << endl;
+	for (i = 0; i < *ptrn; i++)
+	{
+		for (j = 0; j < *ptrm; j++)
+		{
+			cout << setw(4) << (*(matrix+i))[j];
+		}
+		cout << endl << endl;
+	}
+	cout << endl;
+	_getch();
+}
+===============
+9.Дана матрица A(N, N). Переписать элементы её главной диагонали в одномерный массив Y(N) и разделить их на максимальный элемент главной диагонали.
+#include <iostream>
+#include <iomanip>
+#include <ctime>
+#include <conio.h>
+#include <stdio.h>
+using namespace std;
+void main()
+{
+	setlocale(0, "");
+	system("color f0");
+	int i, j, n;
+	const int N = 100;
+	int matrix[N][N];
+	int *ptrn;
+	float max, Y[N];
+	srand((unsigned)time(NULL));
+	cout << "Введите количество строк и столбцов : ";
+	cin >> n;
+	ptrn = &n;
+	cout << endl;
+	cout << "Ваша матрица размером " << *ptrn << " на " << *ptrn << endl << endl;
+	for (i = 0; i < *ptrn; i++)
+		for (j = 0; j < *ptrn; j++)
+			*(matrix[i] + j) = rand() % 7 + 3;
+	for (i = 0; i < *ptrn; i++)
+	{
+		for (j = 0; j < *ptrn; j++)
+		{
+			cout << setw(4) << (*(matrix + i))[j];
+		}
+		cout << endl << endl;
+	}
+	cout << endl;
+
+	for (i = 0, j = 0; i < *ptrn, j < *ptrn; i++, j++)
+		*(Y + i) =(float) *(*(matrix + i) + j);
+
+	cout << "Переписанные элементы её главной диагонали в одномерный массив Y : " << endl;
+	for (i = 0; i < *ptrn; i++)
+		cout << *(Y + i) << ' ';
+	cout << endl;
+
+	max = Y[0];
+	for (i = 0; i < *ptrn; i++)
+		if (*(Y + i) > max)
+			max = *(Y + i);
+	cout << "Максимальный элемент главной диагонали матрицы : " << max << endl;
+
+	for (i = 0; i < *ptrn; i++)
+		*(Y + i) /= max;
+	cout << endl;
+
+	cout << "Массив из элементов главной диаонали матрицы,\nразделенный на максимальный элемент главной диагонали матрицы : " << endl;
+	for (i = 0; i < *ptrn; i++)
+		cout << setprecision(3) << *(Y + i) << ' ';
+	cout << endl;
+	_getch();
+}

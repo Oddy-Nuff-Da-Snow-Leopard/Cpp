@@ -1,0 +1,173 @@
+//1.Скопировать в файл FILE2 только четные строки из FILE1. Подсчитать размер файлов FILE1 и FILE2 (в байтах).
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+void main(void)
+{
+	setlocale(0, "");
+
+	const int N = 50;
+	char str[N];
+
+	ifstream outFile1("FILE1.txt", ios_base::in);
+
+	if (outFile1.is_open())
+		cout << "Файл FILE1.txt успешно открыт для чтения!" << endl;
+	else
+		cout << "Ошибка открытия файла FILE1.txt!" << endl;
+
+
+	ofstream inFile2("FILE2.txt", ios_base::out, ios_base::trunc);
+
+	if (inFile2.is_open())
+		cout << "Файл FILE2.txt успешно открыт для записи!" << endl;
+	else
+		cout << "Ошибка открытия файла FILE2.txt!" << endl;
+
+	int counter = 0;
+	while (outFile1.getline(str, N))
+	{
+		counter++;
+		if (counter % 2 == 0)
+			inFile2 << str << endl;
+	}
+	cout << "Все четные строки файла FILE1.txt скопированы в файл FILE2.txt!" << endl;
+
+	outFile1.close();
+	inFile2.close();
+	cout << "Файлы FILE1.txt и FILE2.txt успешно закрыты!" << endl;
+
+
+	int fileSize;
+
+
+	ifstream File1("FILE1.txt", ios_base::in);
+
+	File1.seekg(0, File1.end);
+	fileSize = File1.tellg();
+
+	cout << "Размер файла FILE1.txt в байтах: " << fileSize << endl;
+	File1.close();
+
+
+	ifstream File2("FILE2.txt", ios_base::in);
+
+	File2.seekg(0, ios_base::end);
+	fileSize = File2.tellg();
+
+	cout << "Размер файла FILE2.txt в байтах: " << fileSize << endl;
+	File2.close();
+
+}
+===============
+/*2.Ввести с клавиатуры строку символов, состоящую из цифр и слов, разделенных пробелами, и записать ее в файл.
+Прочитать из файла данные и вывести нечетные числа строки.*/
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+int i;
+const int N = 100;
+
+void IN(ofstream &,char *, char *);
+char *OUT(ifstream &, char *);
+
+int main(void)
+{
+	setlocale(0, "");
+
+	char *name = new char[N];
+	cout << "Введите имя файла с расширением: ";
+	cin.getline(name, N);
+
+	char *line = new char[N];
+	cout << "Вводите строку символов, состоящую из цифр и слов, разделенных пробелами: " << endl;
+	cin.getline(line, N);
+
+	ofstream recording;
+	ifstream reading;
+
+	IN(recording, name, line);
+
+	
+	char *oddNumbers = OUT(reading, name);
+	cout << "Нечетные числа строки: " << endl;
+	for (i = 0; oddNumbers[i] != '\0'; i++)
+		cout << oddNumbers[i];
+	cout << endl << endl;
+
+	return 0;
+}
+
+void IN(ofstream &file, char *name, char *Str)
+{
+	file.open(name, ios_base::out, ios_base::trunc);
+	if (file.is_open())
+		cout << "Файл " << name << " успешно открыт для записи!" << endl;
+	else
+		cout << "Ошибка открытия файла " << name << '!' << endl;
+
+	file << Str;
+	cout << "Строка записана в файл " << name << '!' << endl;
+
+	file.close();
+	cout << "Файл " << name << " успешно закрыт!" << endl << endl;
+}
+
+
+char *OUT(ifstream &file, char *name)
+{
+	file.open(name, ios_base::in);
+	if (file.is_open())
+		cout << "Файл " << name << " успешно открыт для чтения!" << endl;
+	else
+		cout << "Ошибка открытия файла " << name << '!' << endl;
+
+	char Str[N];
+	file.getline(Str, N);
+
+	cout << "Строка считанная с файла " << name << ':' << endl;
+	cout << Str << endl;
+
+	int length = 0;
+	for (i = 0; Str[i] != '\0'; i++)
+		length++;
+
+	Str[length] = ' ';
+	
+	int n, k, j, value;
+	char *Buff;
+	char *oddNumbers = new char[length];
+	int x = 0;
+
+	for (i = 0; i < length; i++)
+	{
+		n = 0;
+		while (Str[i] != ' ')
+		{
+			n++;
+			i++;
+		}
+
+		Buff = new char[n];
+		for (j = 0, k = i - n; j < n, k < i; k++, j++)
+			Buff[j] = Str[k];
+
+		value = atoi(Buff);
+
+		if (value != 0 && value % 2 != 0)
+		{
+			for (x, j = 0; x < i, j < n; x++, j++)
+				oddNumbers[x] = Buff[j];
+			oddNumbers[x++] = ' ';
+		}
+			delete[]Buff;
+	}
+	oddNumbers[x] = '\0';
+	file.close();
+	cout << "Файл " << name << " успешно закрыт!" << endl << endl;
+	return oddNumbers;
+}

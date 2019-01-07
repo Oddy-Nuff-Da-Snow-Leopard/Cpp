@@ -1,0 +1,166 @@
+7. Если есть в матрице столбец, все элементы которого отрицательны, то найти среднее арифметическое этих элементов. Вычесть полученное значение из всех элементов матрицы.
+
+#include <iostream>
+#include <iomanip>
+#include <ctime>
+#include <conio.h>
+using namespace std;
+int i, j;
+
+float **matrix(int n, int m);
+bool condition(int n, int m, float **A);
+float *&SUM_n_COUNTER_n_amount(int n, int m, float **&A);
+float **subtraction(int n, int m, float **ptrA, float average);
+
+void main()
+{
+	srand((unsigned)time(NULL));
+	setlocale(0, "");
+	int n, m;
+	cout << "Введите количество строк : ";
+	cin >> n;
+	cout << "Введите количесвто столбцов : ";
+	cin >> m;
+	float **A = matrix(n, m);
+
+	cout << "Ваша матрица : " << endl << endl;
+	for (i = 0; i < n; i++)
+	{
+		for (j = 0; j < m; j++)
+		{
+			cout << setw(4) << *(A[i] + j);
+		}
+		cout << endl << endl;
+	}
+
+	if (condition(n, m, A) == true)
+		cout << "Условие выполняется - отрицательные столбцы есть" << endl;
+	else
+		cout << "Условие не выполняется - отрицательные столбцы отсутствуют" << endl;
+
+	float *B = SUM_n_COUNTER_n_amount(n, m, A);
+	float SUM, COUNTER, amount;
+	SUM = B[0];
+	COUNTER = B[1];
+	amount = B[2];
+	float average = SUM / COUNTER;
+	if (amount >= 1)
+	{
+		if (amount == 1)
+			cout << "Сумма элементов отрицательного столбца : " << SUM << endl;
+		else if (amount > 1)
+			cout << "Сумма элементов отрицательных столбцов : " << SUM << endl;
+		cout << "Среднее арифметическое этих элементов " << setprecision(4) << average << endl << endl;
+		**subtraction(n, m, A, average);
+		cout << "Полученное значение вычтено из всех элементов матрицы : " << endl << endl;
+		for (i = 0; i < n; i++)
+		{
+			for (j = 0; j < m; j++)
+			{
+				cout << setw(6) << setprecision(3) << *(*(A + i) + j);
+			}
+			cout << endl << endl;
+		}
+	}
+	for (i = 0; i < n; i++)
+		delete A[i];
+	delete[]A;
+	delete[]B;
+	_getch();
+
+}
+
+//функция для выделения памяти под матрицу
+float **matrix(int n, int m)
+{
+	float **A = new float*[n];
+	for (i = 0; i < n; i++)
+	{
+		*(A + i) = new float[m];
+		for (j = 0; j < m; j++)
+			*(*(A + i) + j) = float(-7 + rand() % 10);
+	}
+	return A;
+}
+//функция для проверки условия 
+bool condition(int n, int m, float **A)
+{
+	float amount = 0;
+	for (j = 0; j < m; j++)
+	{
+		i = 0;
+		if (*(*(A + i) + j) < 0)
+		{
+			while (i < n)
+			{
+				if ((*(A + i))[j] < 0)
+				{
+					i++;
+				}
+				else
+				{
+					break;
+				}
+			}
+			if (i == n)
+			{
+				amount++;
+			}
+		}
+	}
+	if (amount != 0)
+		return true;
+	else
+		return false;
+}
+
+//функция для определения количества отрицательных столбцов и количества элементов этих столбцов,а также их суммы
+float *&SUM_n_COUNTER_n_amount(int n, int m, float **&A)
+{
+	int counter;
+	float sum = 0, SUM = 0, COUNTER = 0, amount = 0;
+	for (j = 0; j < m; j++)
+	{
+		i = 0;
+		counter = 0;
+		if (*(*(A + i) + j) < 0)
+		{
+			while (i < n)
+			{
+				if ((*(A + i))[j] < 0)
+				{
+					counter++;
+					sum += *(*(A + i) + j);
+					i++;
+				}
+				else
+				{
+					sum = 0;
+					break;
+				}
+			}
+			if (i == n)
+			{
+				COUNTER += counter;
+				amount++;
+				SUM += sum;
+				sum = 0;
+			}
+		}
+	}
+	int p = 3;
+	float *B = new float[p];
+	B[0] = SUM;
+	B[1] = COUNTER;
+	B[2] = amount;
+	return B;
+}
+
+//функция вычитающая из каждого элемента матрицы среднее арифметическое отрицательных столбцов
+float **subtraction(int n, int m, float **ptrA, float average)
+{
+	for (i = 0; i < n; i++)
+		for (j = 0; j < m; j++)
+			*(ptrA[i] + j) -= average;
+	return ptrA;
+}
